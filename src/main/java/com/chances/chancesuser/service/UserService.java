@@ -62,4 +62,12 @@ public interface UserService extends BaseService {
      * @param userId 用户ID
      */
     UserDTO userInfo(String userId);
+
+    /**
+     * 更新用户信息
+     *
+     * @param userId  用户ID
+     * @param userDTO 用户信息     | status | | admin |  | email |  | mobile |
+     */
+    void userUpdate(String userId, UserDTO userDTO);
 }

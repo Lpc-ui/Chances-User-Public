@@ -119,4 +119,18 @@ public class UserServiceImpl implements UserService {
         return userDTO;
     }
 
+    @Override
+    public void userUpdate(String userId, UserDTO userDTO) {
+        UserMO userMO = userDao.findById(Long.valueOf(userId)).orElse(null);
+        if (userMO == null) throw new CuException("参数有误");
+        if (ObjectUtils.isNotEmpty(userDTO.getStatus())) userMO.setStatus(userDTO.getStatus());
+        if (ObjectUtils.isNotEmpty(userDTO.getAdmin())) userMO.setAdmin(userDTO.getAdmin());
+        if (ObjectUtils.isNotEmpty(userDTO.getEmail())) userMO.setEmail(userDTO.getEmail());
+        if (ObjectUtils.isNotEmpty(userDTO.getMobile())) userMO.setMobile(userDTO.getMobile());
+        //手机号校验
+        if (ObjectUtils.isNotEmpty(userDTO.getMobile()) && userDao.existsByMobile(userDTO.getMobile()))
+            throw new CuException("手机号重复");
+        userDao.save(userMO);
+    }
+
 }

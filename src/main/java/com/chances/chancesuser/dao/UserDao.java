@@ -17,6 +17,7 @@ import java.time.LocalDateTime;
 public interface UserDao extends BaseDao<UserMO> {
     UserMO findByLoginName(String loginName);
 
+    boolean existsByMobile(String mobile);
 
     /**
      * 更新登录时间

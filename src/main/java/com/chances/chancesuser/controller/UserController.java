@@ -97,4 +97,14 @@ public class UserController {
         return R.ok(userService.userInfo(userId)).setMsg("用户信息");
     }
 
+    /**
+     * 用户信息修改
+     *
+     * @param userId 用户id
+     */
+    @PutMapping(value = "/user/{userId}")
+    private R userUpdate(@PathVariable String userId, @RequestBody UserDTO userDTO) {
+        userService.userUpdate(userId, userDTO);
+        return R.ok().setMsg("修改成功");
+    }
 }
