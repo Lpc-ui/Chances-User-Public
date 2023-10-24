@@ -70,7 +70,9 @@ public class UserServiceImpl implements UserService {
             throw new CuException(UserStatusCode.LOCK.describe());
         if (userMO.getStatus().equals(UserStatusCode.DISABLE.code()))
             throw new CuException(UserStatusCode.DISABLE.describe());
-        return jwtUtils.generateToken(loginName);
+        String token = jwtUtils.generateToken(loginName);
+        userDao.updateLastLoginTimeById(userMO.getId(), LocalDateTime.now());
+        return token;
     }
 
     @Override
