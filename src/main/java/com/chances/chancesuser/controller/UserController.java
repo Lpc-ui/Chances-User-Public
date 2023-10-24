@@ -107,4 +107,16 @@ public class UserController {
         userService.userUpdate(userId, userDTO);
         return R.ok().setMsg("修改成功");
     }
+
+    /**
+     * 用户锁定与解锁
+     *
+     * @param userId 用户id
+     * @param status 用户状态
+     */
+    @PostMapping(value = "user/update/status")
+    private R lock(String status, String userId) {
+        userService.lock(userId, status);
+        return R.ok().setMsg("更新成功");
+    }
 }

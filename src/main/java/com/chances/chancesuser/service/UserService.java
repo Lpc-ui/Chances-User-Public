@@ -70,4 +70,13 @@ public interface UserService extends BaseService {
      * @param userDTO 用户信息     | status | | admin |  | email |  | mobile |
      */
     void userUpdate(String userId, UserDTO userDTO);
+
+    /**
+     * 用户锁定与解锁
+     *
+     * @param userId 用户
+     * @param status 状态
+     */
+    void lock(String userId, String status);
+
 }

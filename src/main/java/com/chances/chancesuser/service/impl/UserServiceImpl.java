@@ -133,4 +133,9 @@ public class UserServiceImpl implements UserService {
         userDao.save(userMO);
     }
 
+    @Override
+    public void lock(String userId, String status) {
+        userDao.updateStatusById(Long.parseLong(userId), Integer.parseInt(status));
+    }
+
 }

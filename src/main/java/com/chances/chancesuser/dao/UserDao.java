@@ -32,6 +32,18 @@ public interface UserDao extends BaseDao<UserMO> {
 
 
     /**
+     * 更新状态
+     *
+     * @param id     用户id
+     * @param status 状态
+     */
+    @Modifying
+    @Transactional
+    @Query("UPDATE UserMO u SET u.status = :status WHERE u.id = :id")
+    void updateStatusById(@Param("id") Long id, @Param("status") Integer status);
+
+
+    /**
      * 条件分页
      */
     default Page<UserMO> findByEmailAndMobile(String email, String mobile, Pageable pageable) {
