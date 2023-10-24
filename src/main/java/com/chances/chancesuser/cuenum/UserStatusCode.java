@@ -17,11 +17,11 @@ public enum UserStatusCode {
 
     private final String describe;
 
-    public String getdescribe() {
+    public String describe() {
         return this.describe;
     }
 
-    public int getCode() {
+    public int code() {
         return this.code;
     }
 }

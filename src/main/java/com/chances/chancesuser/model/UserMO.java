@@ -3,6 +3,7 @@ package com.chances.chancesuser.model;
 import com.chances.chancesuser.base.BaseModel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -15,6 +16,7 @@ import java.time.LocalDateTime;
 @Data
 @Table(name = "user")
 @EqualsAndHashCode(callSuper = true)
+@ToString
 public class UserMO extends BaseModel {
     /**
      * 登录名

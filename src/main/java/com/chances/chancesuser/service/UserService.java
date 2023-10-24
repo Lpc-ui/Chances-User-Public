@@ -9,4 +9,11 @@ public interface UserService extends BaseService {
 
     void add(UserDTO userDTO);
 
+
+    /**
+     * @param loginName 用户名
+     * @param password  密码
+     * @return token
+     */
+    String userLogin(String loginName, String password);
 }

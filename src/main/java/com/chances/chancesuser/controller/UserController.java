@@ -1,7 +1,6 @@
 package com.chances.chancesuser.controller;
 
 import com.chances.chancesuser.base.R;
-import com.chances.chancesuser.dao.UserDao;
 import com.chances.chancesuser.dto.UserDTO;
 import com.chances.chancesuser.service.UserService;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,12 +25,12 @@ public class UserController {
     }
 
     /**
-     * test
+     * 用户登录
      */
     @RequestMapping(value = "/user/login", method = {RequestMethod.POST})
-    private R userLogin() {
-        userService.test();
-        return R.ok("123");
+    private R userLogin(String loginName, String password) {
+        String token = userService.userLogin(loginName, password);
+        return R.ok().put("token", token);
     }
 
 

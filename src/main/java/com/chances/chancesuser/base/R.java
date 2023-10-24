@@ -3,10 +3,13 @@ package com.chances.chancesuser.base;
 import org.springframework.util.StringUtils;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 通用返回类
  */
+@SuppressWarnings("all")
 public class R<T> implements Serializable {
     /**
      * 返回码:0-成功 大于0失败
@@ -30,10 +33,15 @@ public class R<T> implements Serializable {
         return objectR;
     }
 
-    public static R ok() {
-        R<Object> objectR = new R<>(null);
+    public static R<Map<String, Object>> ok() {
+        R<Map<String, Object>> objectR = new R<>(new HashMap<>());
         objectR.setCode(200);
         return objectR;
+    }
+
+    public R put(String key, Object value) {
+        ((HashMap<String, Object>) this.data).put(key, value);
+        return this;
     }
 
     /**
