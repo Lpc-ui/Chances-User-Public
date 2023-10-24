@@ -11,6 +11,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 
 public interface UserDao extends BaseDao<UserMO> {
@@ -24,8 +25,9 @@ public interface UserDao extends BaseDao<UserMO> {
      * @param lastLoginTime 当前时间
      */
     @Modifying
+    @Transactional
     @Query("UPDATE UserMO u SET u.lastLoginTime = :lastLoginTime WHERE u.id = :id")
-    int updateLastLoginTimeById(@Param("id") Long id, @Param("lastLoginTime") LocalDateTime lastLoginTime);
+    void updateLastLoginTimeById(@Param("id") Long id, @Param("lastLoginTime") LocalDateTime lastLoginTime);
 
 
     /**
