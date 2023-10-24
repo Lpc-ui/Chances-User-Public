@@ -108,4 +108,15 @@ public class UserServiceImpl implements UserService {
         userDao.deleteById(Long.valueOf(userId));
     }
 
+    @Override
+    public UserDTO userInfo(String userId) {
+        UserMO userMO = userDao.findById(Long.valueOf(userId)).orElse(null);
+        UserDTO userDTO = BeanCopyUtil.copyBeanProperties(userMO, UserDTO::new);
+        userDTO.setAvata(null);
+        userDTO.setStatus(null);
+        userDTO.setPassword(null);
+        userDTO.setLastLoginTime(null);
+        return userDTO;
+    }
+
 }

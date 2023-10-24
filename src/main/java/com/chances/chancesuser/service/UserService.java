@@ -51,7 +51,15 @@ public interface UserService extends BaseService {
 
     /**
      * 删除用户
+     *
      * @param userId 用户id
      */
     void userDelete(String userId);
+
+    /**
+     * 用户信息
+     *
+     * @param userId 用户ID
+     */
+    UserDTO userInfo(String userId);
 }

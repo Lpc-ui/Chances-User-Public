@@ -2,6 +2,7 @@ package com.chances.chancesuser.dto;
 
 import com.chances.chancesuser.base.PageBo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -9,6 +10,8 @@ import java.time.LocalDateTime;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
+//序列化时候只包含字段不为null的字段
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserDTO extends PageBo {
     /**
      * 登录名

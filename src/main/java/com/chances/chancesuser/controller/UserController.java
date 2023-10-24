@@ -1,9 +1,7 @@
 package com.chances.chancesuser.controller;
 
-import com.chances.chancesuser.base.PageJson;
 import com.chances.chancesuser.base.R;
 import com.chances.chancesuser.dto.UserDTO;
-import com.chances.chancesuser.model.UserMO;
 import com.chances.chancesuser.service.UserService;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,8 +30,7 @@ public class UserController {
      */
     @RequestMapping(value = "/user/login", method = {RequestMethod.POST})
     private R userLogin(String loginName, String password) {
-        String token = userService.userLogin(loginName, password);
-        return R.ok().put("token", token);
+        return R.ok().put("token", userService.userLogin(loginName, password));
     }
 
 
@@ -75,8 +72,7 @@ public class UserController {
                        @RequestParam(required = false) String mobile,
                        @RequestParam(required = false, defaultValue = "10") String pageSize,
                        @RequestParam(required = false, defaultValue = "1") String pageNum) throws Exception {
-        PageJson<UserMO> pageJson = userService.userList(email, mobile, pageNum, pageSize);
-        return R.ok(pageJson);
+        return R.ok(userService.userList(email, mobile, pageNum, pageSize)).setMsg("条件分页");
     }
 
     /**
@@ -88,6 +84,17 @@ public class UserController {
     private R userDelete(@PathVariable String userId) {
         userService.userDelete(userId);
         return R.ok().setMsg("移除成功");
+    }
+
+
+    /**
+     * 用户信息
+     *
+     * @param userId 用户id
+     */
+    @GetMapping(value = "/user/{userId}")
+    private R userInfo(@PathVariable String userId) {
+        return R.ok(userService.userInfo(userId)).setMsg("用户信息");
     }
 
 }
