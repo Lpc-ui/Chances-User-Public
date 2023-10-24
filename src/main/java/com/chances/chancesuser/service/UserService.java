@@ -1,6 +1,7 @@
 package com.chances.chancesuser.service;
 
 import com.chances.chancesuser.base.BaseService;
+import com.chances.chancesuser.base.PageJson;
 import com.chances.chancesuser.dto.UserDTO;
 import com.chances.chancesuser.model.UserMO;
 
@@ -37,4 +38,14 @@ public interface UserService extends BaseService {
      * @return UserMO
      */
     UserMO findByName(String userName);
+
+    /**
+     * 用户列表
+     *
+     * @param email    email
+     * @param mobile   mobile
+     * @param pageSize pageSize
+     * @param pageNum  pageNum
+     */
+    PageJson<UserMO> userList(String email, String mobile, String pageNum, String pageSize) throws Exception;
 }

@@ -1,5 +1,6 @@
 package com.chances.chancesuser.service.impl;
 
+import com.chances.chancesuser.base.PageJson;
 import com.chances.chancesuser.cuenum.UserAdminCode;
 import com.chances.chancesuser.cuenum.UserStatusCode;
 import com.chances.chancesuser.dao.UserDao;
@@ -13,10 +14,13 @@ import com.chances.chancesuser.utils.PasswordUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -80,4 +84,21 @@ public class UserServiceImpl implements UserService {
     public UserMO findByName(String userName) {
         return userDao.findByLoginName(userName);
     }
+
+    @Override
+    public PageJson<UserMO> userList(String email, String mobile, String pageNum, String pageSize) {
+        int size = Integer.parseInt(pageSize);
+        int num = Integer.parseInt(pageNum) - 1;
+        PageRequest pageRequest = PageRequest.of(num, size);
+        Page<UserMO> pageBo = userDao.findByEmailAndMobile(email, mobile, pageRequest);
+        PageJson<UserMO> data = new PageJson<>();
+        data.setPageSize(size);
+        data.setPageNum(num);
+        data.setPageTotal(pageBo.getTotalPages());
+        data.setDataTotal(pageBo.getTotalElements());
+        List<UserMO> content = pageBo.getContent();
+        data.setJsonList(content);
+        return data;
+    }
+
 }

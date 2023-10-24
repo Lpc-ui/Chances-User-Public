@@ -1,7 +1,9 @@
 package com.chances.chancesuser.controller;
 
+import com.chances.chancesuser.base.PageJson;
 import com.chances.chancesuser.base.R;
 import com.chances.chancesuser.dto.UserDTO;
+import com.chances.chancesuser.model.UserMO;
 import com.chances.chancesuser.service.UserService;
 import org.springframework.web.bind.annotation.*;
 
@@ -58,5 +60,22 @@ public class UserController {
     private R logout(@RequestHeader String token) {
         userService.logout(token);
         return R.ok().setMsg("退出成功");
+    }
+
+    /**
+     * 用户列表接口
+     *
+     * @param email    email
+     * @param mobile   mobile
+     * @param pageSize pageSize
+     * @param pageNum  pageNum
+     */
+    @RequestMapping(value = "/user/list", method = {RequestMethod.GET})
+    private R userList(@RequestParam(required = false) String email,
+                       @RequestParam(required = false) String mobile,
+                       @RequestParam(required = false, defaultValue = "10") String pageSize,
+                       @RequestParam(required = false, defaultValue = "1") String pageNum) throws Exception {
+        PageJson<UserMO> pageJson = userService.userList(email, mobile, pageNum, pageSize);
+        return R.ok(pageJson);
     }
 }

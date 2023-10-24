@@ -1,7 +1,6 @@
 package com.chances.chancesuser.base;
 
-import com.chances.chancesuser.utils.BeanCopyUtil;
-import org.springframework.data.domain.*;
+import org.springframework.data.domain.Example;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -56,43 +55,5 @@ public interface BaseDao<T extends BaseModel> extends JpaRepository<T, Long> {
      */
     default T getOneByEntity(T entity) {
         return this.findOne(Example.of(entity)).orElse(null);
-    }
-
-    /**
-     * 条件分页
-     * 新建实体继承PageBo;设置条件
-     * 可进行多字段排序
-     *
-     * @param entityPageBo 查询BO
-     * @param entityClass  数据库实体类对象
-     * @param sortProperty 排序字段,默认ASC 排序格式:  Sort.Order.desc("property"); Sort.Order.asc("property");
-     * @param <V>          封装的Vo继承自PageBo
-     * @return PageJson
-     */
-    @SuppressWarnings("all")
-    default <V extends PageBo> PageJson<T> conditionPage(V entityPageBo, Class<T> entityClass, Sort.Order... sortProperty) throws Exception {
-        return conditionPage(entityPageBo, entityClass, null, sortProperty);
-    }
-
-    /**
-     * 条件分页
-     * 新建实体继承PageBo;设置条件
-     * 可进行多字段排序
-     *
-     * @param entityPageBo 查询BO
-     * @param entityClass  数据库实体类对象
-     * @param sortProperty 排序字段,默认ASC 排序格式:  Sort.Order.desc("property"); Sort.Order.asc("property");
-     * @param <V>          封装的Vo继承自PageBo
-     * @param matching     规则匹配:可由ExampleMatcher.matching()创建
-     * @return PageJson
-     */
-    @SuppressWarnings("all")
-    default <V extends PageBo> PageJson<T> conditionPage(V entityPageBo, Class<T> entityClass, ExampleMatcher matching, Sort.Order... sortProperty) throws Exception {
-        T t = entityClass.newInstance();
-        BeanCopyUtil.copyProperties(entityPageBo, t);
-        Sort sortAll = Sort.by(sortProperty);
-        PageRequest pageRequest = PageRequest.of(entityPageBo.getPageNum(), entityPageBo.getPageSize(), sortAll);
-        Page<T> page = matching == null ? this.findAll(Example.of(t), pageRequest) : this.findAll(Example.of(t, matching), pageRequest);
-        return new PageJson<T>().setPageTotal(page.getTotalPages()).setJsonList(page.getContent()).setPageNum(entityPageBo.getPageNum()).setPageSize(entityPageBo.getPageSize()).setDataTotal(page.getTotalElements());
     }
 }

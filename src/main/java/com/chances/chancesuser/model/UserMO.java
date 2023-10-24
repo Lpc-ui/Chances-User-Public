@@ -50,4 +50,12 @@ public class UserMO extends BaseModel {
      * 最后登录时间
      */
     private LocalDateTime lastLoginTime;
+
+    public UserMO(String mobile, String email) {
+        this.mobile = mobile;
+        this.email = email;
+    }
+
+    public UserMO() {
+    }
 }
