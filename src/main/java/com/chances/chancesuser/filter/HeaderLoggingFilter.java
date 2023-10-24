@@ -6,6 +6,7 @@ import com.chances.chancesuser.model.UserMO;
 import com.chances.chancesuser.service.UserService;
 import com.chances.chancesuser.utils.JwtUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Resource;
 import javax.servlet.*;
@@ -46,6 +47,7 @@ public class HeaderLoggingFilter implements Filter {
         } else {
             // 获取请求头中的header信息
             String token = ((HttpServletRequest) request).getHeader("token");
+            if (StringUtils.isEmpty(token)) throw new CuException("未登录");
             // 在此处处理headerValue，可以打印、记录、验证等操作
             String userName = jwtUtils.getUsernameFromToken(token);
             log.info(userName + ":" + "登录");

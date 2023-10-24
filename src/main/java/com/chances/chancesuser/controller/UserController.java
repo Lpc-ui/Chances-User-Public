@@ -54,7 +54,7 @@ public class UserController {
      * @param token token
      * @return ok
      */
-    @RequestMapping(value = "/user/login", method = {RequestMethod.POST})
+    @RequestMapping(value = "/user/login", method = {RequestMethod.GET})
     private R logout(@RequestHeader String token) {
         userService.logout(token);
         return R.ok().setMsg("退出成功");

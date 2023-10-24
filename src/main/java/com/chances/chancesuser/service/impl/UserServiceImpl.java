@@ -75,4 +75,9 @@ public class UserServiceImpl implements UserService {
         if (StringUtils.isEmpty(userName)) return;
         jwtUtils.invalidateToken(userName);
     }
+
+    @Override
+    public UserMO findByName(String userName) {
+        return userDao.findByLoginName(userName);
+    }
 }

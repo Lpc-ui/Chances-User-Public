@@ -2,6 +2,7 @@ package com.chances.chancesuser.service;
 
 import com.chances.chancesuser.base.BaseService;
 import com.chances.chancesuser.dto.UserDTO;
+import com.chances.chancesuser.model.UserMO;
 
 public interface UserService extends BaseService {
 
@@ -28,4 +29,12 @@ public interface UserService extends BaseService {
      * @param token token
      */
     void logout(String token);
+
+    /**
+     * findByName
+     *
+     * @param userName userName
+     * @return UserMO
+     */
+    UserMO findByName(String userName);
 }
