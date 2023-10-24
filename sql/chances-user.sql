@@ -1,6 +1,7 @@
+drop table user;
 CREATE TABLE user
 (
-    id              BIGINT      NOT NULL comment 'id',
+    id              BIGINT      NOT NULL comment 'id' auto_increment,
     login_name      VARCHAR(64) NOT NULL comment '登录名',
     password        VARCHAR(64) NOT NULL comment '密码',
     mobile          VARCHAR(11) NOT NULL comment '手机',
