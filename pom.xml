@@ -75,6 +75,11 @@
             <artifactId>spring-security-crypto</artifactId>
             <version>5.7.4</version>
         </dependency>
+        <dependency>
+            <groupId>com.zdawn</groupId>
+            <artifactId>jwt-token</artifactId>
+            <version>1.2.3</version>
+        </dependency>
     </dependencies>
 
     <build>
