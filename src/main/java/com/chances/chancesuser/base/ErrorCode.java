@@ -10,7 +10,11 @@ public enum ErrorCode {
 
     SYS_LOGIN_NO(101, "用户未登录"),
 
-    SYS_NO_PERMISSION(100, "用户禁用");
+    SYS_NO_PERMISSION(100, "用户禁用"),
+
+    CU_EX(500, "业务异常");
+
+
 
     ErrorCode(int code, String message) {
         this.code = code;

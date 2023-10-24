@@ -11,7 +11,7 @@ public class R<T> implements Serializable {
     /**
      * 返回码:0-成功 大于0失败
      */
-    private int code = 0;
+    private int status = 0;
     /**
      * 消息提示
      */
@@ -20,11 +20,18 @@ public class R<T> implements Serializable {
      * 数据对象
      */
     private T data;
+
     /**
      * 成功:Str返回,有返回code 200
      */
     public static R ok(Object data) {
         R<Object> objectR = new R<>(data);
+        objectR.setCode(200);
+        return objectR;
+    }
+
+    public static R ok() {
+        R<Object> objectR = new R<>(null);
         objectR.setCode(200);
         return objectR;
     }
@@ -65,7 +72,7 @@ public class R<T> implements Serializable {
      * 添加错误码
      */
     public void setError(ErrorCode errorCode) {
-        this.code = errorCode.getCode();
+        this.status = errorCode.getCode();
         this.msg = errorCode.getMessage();
     }
 
@@ -73,24 +80,25 @@ public class R<T> implements Serializable {
      * 添加错误码-消息自定义
      */
     public void setError(ErrorCode errorCode, String message) {
-        this.code = errorCode.getCode();
+        this.status = errorCode.getCode();
         this.msg = message;
     }
 
     public int getCode() {
-        return this.code;
+        return this.status;
     }
 
     public void setCode(int code) {
-        this.code = code;
+        this.status = code;
     }
 
     public String getMsg() {
         return this.msg;
     }
 
-    public void setMsg(String msg) {
+    public R<T> setMsg(String msg) {
         this.msg = msg;
+        return this;
     }
 
     public T getData() {
