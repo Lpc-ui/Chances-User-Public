@@ -78,4 +78,16 @@ public class UserController {
         PageJson<UserMO> pageJson = userService.userList(email, mobile, pageNum, pageSize);
         return R.ok(pageJson);
     }
+
+    /**
+     * 删除用户
+     *
+     * @param userId 用户id
+     */
+    @DeleteMapping(value = "/user/{userId}")
+    private R userDelete(@PathVariable String userId) {
+        userService.userDelete(userId);
+        return R.ok().setMsg("移除成功");
+    }
+
 }

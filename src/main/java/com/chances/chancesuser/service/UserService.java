@@ -48,4 +48,10 @@ public interface UserService extends BaseService {
      * @param pageNum  pageNum
      */
     PageJson<UserMO> userList(String email, String mobile, String pageNum, String pageSize) throws Exception;
+
+    /**
+     * 删除用户
+     * @param userId 用户id
+     */
+    void userDelete(String userId);
 }

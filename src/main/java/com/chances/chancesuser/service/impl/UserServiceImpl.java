@@ -101,4 +101,9 @@ public class UserServiceImpl implements UserService {
         return data;
     }
 
+    @Override
+    public void userDelete(String userId) {
+        userDao.deleteById(Long.valueOf(userId));
+    }
+
 }
