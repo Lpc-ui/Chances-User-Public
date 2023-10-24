@@ -7,6 +7,11 @@ public interface UserService extends BaseService {
 
     void test();
 
+    /**
+     * 增加用户
+     *
+     * @param userDTO userDTO
+     */
     void add(UserDTO userDTO);
 
 
@@ -16,4 +21,11 @@ public interface UserService extends BaseService {
      * @return token
      */
     String userLogin(String loginName, String password);
+
+    /**
+     * 用户退出
+     *
+     * @param token token
+     */
+    void logout(String token);
 }

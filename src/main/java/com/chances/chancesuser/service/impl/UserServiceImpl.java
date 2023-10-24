@@ -68,4 +68,11 @@ public class UserServiceImpl implements UserService {
             throw new CuException(UserStatusCode.DISABLE.describe());
         return jwtUtils.generateToken(loginName);
     }
+
+    @Override
+    public void logout(String token) {
+        String userName = jwtUtils.getUsernameFromToken(token);
+        if (StringUtils.isEmpty(userName)) return;
+        jwtUtils.invalidateToken(userName);
+    }
 }

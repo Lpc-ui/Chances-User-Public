@@ -3,10 +3,7 @@ package com.chances.chancesuser.controller;
 import com.chances.chancesuser.base.R;
 import com.chances.chancesuser.dto.UserDTO;
 import com.chances.chancesuser.service.UserService;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 
@@ -26,6 +23,10 @@ public class UserController {
 
     /**
      * 用户登录
+     *
+     * @param loginName 用户名
+     * @param password  密码
+     * @return token
      */
     @RequestMapping(value = "/user/login", method = {RequestMethod.POST})
     private R userLogin(String loginName, String password) {
@@ -44,5 +45,18 @@ public class UserController {
     private R userAdd(@RequestBody UserDTO userDTO) {
         userService.add(userDTO);
         return R.ok().setMsg("创建成功");
+    }
+
+
+    /**
+     * 用户退出
+     *
+     * @param token token
+     * @return ok
+     */
+    @RequestMapping(value = "/user/login", method = {RequestMethod.POST})
+    private R logout(@RequestHeader String token) {
+        userService.logout(token);
+        return R.ok().setMsg("退出成功");
     }
 }
