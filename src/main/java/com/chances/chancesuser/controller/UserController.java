@@ -136,18 +136,6 @@ public class UserController {
     }
 
     /**
-     * 用户修改密码
-     *
-     * @param oldPassword 旧密码
-     * @param newPassword 新密码
-     */
-    @PostMapping(value = "user/avatar/upload")
-    private R avatarUpload(String oldPassword, String newPassword, @RequestHeader String token) throws Exception {
-        userService.password(oldPassword, newPassword, token);
-        return R.ok().setMsg("更新成功");
-    }
-
-    /**
      * 图片上传
      *
      * @param file  文件
