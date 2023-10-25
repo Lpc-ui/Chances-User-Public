@@ -49,25 +49,32 @@ public class HeaderLoggingFilter implements Filter {
         } else {
             // 获取请求头中的header信息
             String token = ((HttpServletRequest) request).getHeader("token");
-            if (StringUtils.isEmpty(token)) throw new NotLoginException();
+            if (StringUtils.isEmpty(token)) {
+                throw new NotLoginException();
+            }
             // 在此处处理headerValue，可以打印、记录、验证等操作
             String userName;
             try {
                 userName = jwtUtils.getUsernameFromToken(token);
-                if (!jwtUtils.isTokenValid(token, userName)) throw new NotLoginException();
+                if (!jwtUtils.isTokenValid(token, userName)) {
+                    throw new NotLoginException();
+                }
                 log.info(userName + ":" + "登录");
                 log.info(token + ":" + "token");
                 User user = userService.findByName(userName);
                 Integer status = user.getStatus();
-                if (status.equals(UserStatusCode.LOCK.code())) throw new LockException();
-                if (status.equals(UserStatusCode.DISABLE.code())) throw new LockException();
+                if (status.equals(UserStatusCode.LOCK.code())) {
+                    throw new LockException();
+                }
+                if (status.equals(UserStatusCode.DISABLE.code())) {
+                    throw new LockException();
+                }
             } catch (Exception e) {
                 e.printStackTrace();
                 ServletKit.getRequest().setAttribute("exception", e);
                 ServletKit.getRequest().getRequestDispatcher("/error").forward(ServletKit.getRequest(), ServletKit.getResponse());
                 return;
             }
-
             // 继续处理请求
             chain.doFilter(request, response);
         }

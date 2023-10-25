@@ -46,11 +46,21 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void add(UserDTO userDTO) {
-        if (StringUtils.isEmpty(userDTO.getLoginName())) throw new CuException("用户名不能为空");
-        if (StringUtils.isEmpty(userDTO.getMobile())) throw new CuException("手机号不能为空");
-        if (StringUtils.isEmpty(userDTO.getEmail())) throw new CuException("邮箱不能为空");
-        if (ObjectUtils.isEmpty(userDTO.getAdmin())) userDTO.setAdmin(UserAdminCode.NO_ADMIN.getCode());
-        if (ObjectUtils.isEmpty(userDTO.getStatus())) userDTO.setStatus(UserStatusCode.OK.code());
+        if (StringUtils.isEmpty(userDTO.getLoginName())) {
+            throw new CuException("用户名不能为空");
+        }
+        if (StringUtils.isEmpty(userDTO.getMobile())) {
+            throw new CuException("手机号不能为空");
+        }
+        if (StringUtils.isEmpty(userDTO.getEmail())) {
+            throw new CuException("邮箱不能为空");
+        }
+        if (ObjectUtils.isEmpty(userDTO.getAdmin())) {
+            userDTO.setAdmin(UserAdminCode.NO_ADMIN.getCode());
+        }
+        if (ObjectUtils.isEmpty(userDTO.getStatus())) {
+            userDTO.setStatus(UserStatusCode.OK.code());
+        }
         //初始密码
         userDTO.setLastLoginTime(LocalDateTime.now());
         userDTO.setPassword(PasswordUtils.encodePassword(defaultPassword));
@@ -61,12 +71,18 @@ public class UserServiceImpl implements UserService {
     @Override
     public String userLogin(String loginName, String password) {
         User user = userDao.findByLoginName(loginName);
-        if (ObjectUtils.isEmpty(user)) throw new PwdNotMatchException();
-        if (!PasswordUtils.matchPassword(password, user.getPassword())) throw new PwdNotMatchException();
-        if (user.getStatus().equals(UserStatusCode.LOCK.code()))
+        if (ObjectUtils.isEmpty(user)) {
+            throw new PwdNotMatchException();
+        }
+        if (!PasswordUtils.matchPassword(password, user.getPassword())) {
+            throw new PwdNotMatchException();
+        }
+        if (user.getStatus().equals(UserStatusCode.LOCK.code())) {
             throw new LockException();
-        if (user.getStatus().equals(UserStatusCode.DISABLE.code()))
+        }
+        if (user.getStatus().equals(UserStatusCode.DISABLE.code())) {
             throw new LockException();
+        }
         String token = jwtUtils.generateToken(loginName);
         userDao.updateLastLoginTimeById(user.getId(), LocalDateTime.now());
         return token;
@@ -75,7 +91,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public void logout(String token) {
         String userName = jwtUtils.getUsernameFromToken(token);
-        if (StringUtils.isEmpty(userName)) return;
+        if (StringUtils.isEmpty(userName)) {
+            return;
+        }
         jwtUtils.invalidateToken(userName);
     }
 
@@ -124,14 +142,25 @@ public class UserServiceImpl implements UserService {
     @Override
     public void userUpdate(String userId, UserDTO userDTO, String token) {
         User user = this.getUser(userId, token);
-        if (user == null) throw new CuException("参数有误");
-        if (ObjectUtils.isNotEmpty(userDTO.getStatus())) user.setStatus(userDTO.getStatus());
-        if (ObjectUtils.isNotEmpty(userDTO.getAdmin())) user.setAdmin(userDTO.getAdmin());
-        if (ObjectUtils.isNotEmpty(userDTO.getEmail())) user.setEmail(userDTO.getEmail());
-        if (ObjectUtils.isNotEmpty(userDTO.getMobile())) user.setMobile(userDTO.getMobile());
+        if (user == null) {
+            throw new CuException("参数有误");
+        }
+        if (ObjectUtils.isNotEmpty(userDTO.getStatus())) {
+            user.setStatus(userDTO.getStatus());
+        }
+        if (ObjectUtils.isNotEmpty(userDTO.getAdmin())) {
+            user.setAdmin(userDTO.getAdmin());
+        }
+        if (ObjectUtils.isNotEmpty(userDTO.getEmail())) {
+            user.setEmail(userDTO.getEmail());
+        }
+        if (ObjectUtils.isNotEmpty(userDTO.getMobile())) {
+            user.setMobile(userDTO.getMobile());
+        }
         //手机号校验
-        if (ObjectUtils.isNotEmpty(userDTO.getMobile()) && userDao.existsByMobile(userDTO.getMobile()))
+        if (ObjectUtils.isNotEmpty(userDTO.getMobile()) && userDao.existsByMobile(userDTO.getMobile())) {
             throw new CuException("手机号重复");
+        }
         userDao.save(user);
     }
 
@@ -150,8 +179,12 @@ public class UserServiceImpl implements UserService {
     public void password(String oldPassword, String newPassword, String token) throws Exception {
         String username = jwtUtils.getUsernameFromToken(token);
         User user = userDao.findByLoginName(username);
-        if (!PasswordUtils.matchPassword(oldPassword, user.getPassword())) throw new CuException("原密码有误");
-        if (StringUtils.isEmpty(newPassword)) throw new CuException("请输入新密码");
+        if (!PasswordUtils.matchPassword(oldPassword, user.getPassword())) {
+            throw new CuException("原密码有误");
+        }
+        if (StringUtils.isEmpty(newPassword)) {
+            throw new CuException("请输入新密码");
+        }
         userDao.updatePasswordById(user.getId(), PasswordUtils.encodePassword(newPassword));
         //移除token[退出登录]
         jwtUtils.invalidateToken(username);
@@ -171,10 +204,14 @@ public class UserServiceImpl implements UserService {
             String username = jwtUtils.getUsernameFromToken(token);
             String originalFilename = file.getOriginalFilename();
             long size = file.getSize();
-            if (size > 2000000) throw new CuException("文件过大");
+            if (size > 2000000) {
+                throw new CuException("文件过大");
+            }
             assert originalFilename != null;
             String fix = originalFilename.substring(originalFilename.lastIndexOf("."));
-            if (!images.contains(fix)) throw new CuException("文件类型有误");
+            if (!images.contains(fix)) {
+                throw new CuException("文件类型有误");
+            }
             Path filePath = Paths.get(uploadDir, username + fix);
             // 将文件保存到指定路径
             file.transferTo(filePath.toFile());
