@@ -54,19 +54,20 @@ public class HeaderLoggingFilter implements Filter {
             String userName;
             try {
                 userName = jwtUtils.getUsernameFromToken(token);
-                if (!jwtUtils.isTokenValid(token, userName)) throw new RuntimeException();
+                if (!jwtUtils.isTokenValid(token, userName)) throw new NotLoginException();
+                log.info(userName + ":" + "登录");
+                log.info(token + ":" + "token");
+                UserMO userMO = userService.findByName(userName);
+                Integer status = userMO.getStatus();
+                if (status.equals(UserStatusCode.LOCK.code())) throw new LockException();
+                if (status.equals(UserStatusCode.DISABLE.code())) throw new LockException();
             } catch (Exception e) {
                 e.printStackTrace();
-                ServletKit.getRequest().setAttribute("exception", new NotLoginException());
+                ServletKit.getRequest().setAttribute("exception", e);
                 ServletKit.getRequest().getRequestDispatcher("/error").forward(ServletKit.getRequest(), ServletKit.getResponse());
                 return;
             }
-            log.info(userName + ":" + "登录");
-            log.info(token + ":" + "token");
-            UserMO userMO = userService.findByName(userName);
-            Integer status = userMO.getStatus();
-            if (status.equals(UserStatusCode.LOCK.code())) throw new LockException();
-            if (status.equals(UserStatusCode.DISABLE.code())) throw new LockException();
+
             // 继续处理请求
             chain.doFilter(request, response);
         }

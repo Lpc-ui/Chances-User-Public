@@ -1,5 +1,6 @@
 package com.chances.chancesuser;
 
+import com.chances.chancesuser.cuenum.UserStatusCode;
 import com.chances.chancesuser.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -176,6 +177,24 @@ class ChancesUserApplicationTests {
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.delete("/user/" + userId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("token", TOKEN))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcResultHandlers.print())
+                .andReturn();
+        // 从MvcResult中获取响应内容
+        String responseBody = result.getResponse().getContentAsString();
+        System.out.println("Response Body: " + responseBody);
+    }
+
+    @Test
+    public void 用户管理_用户列表_锁定解锁() throws Exception {
+        //锁定否不能访问接口
+        String userId = "24";
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/user/update/status")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("token", TOKEN)
+                        .param("status", String.valueOf(UserStatusCode.DISABLE.code()))
+                        .param("userId", userId)
+                )
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andDo(MockMvcResultHandlers.print())
                 .andReturn();
