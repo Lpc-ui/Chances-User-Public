@@ -160,6 +160,12 @@ public class UserController {
     @Resource
     private JwtUtils jwtUtils;
 
+    /**
+     * 图片上传
+     *
+     * @param file  文件
+     * @param token 用户
+     */
     @PostMapping("/user/avatar/upload")
     @ResponseBody
     public R uploadFile(@RequestParam("file") MultipartFile file, @RequestHeader String token) {
