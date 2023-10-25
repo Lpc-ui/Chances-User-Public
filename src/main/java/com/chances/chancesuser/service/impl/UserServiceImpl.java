@@ -106,7 +106,7 @@ public class UserServiceImpl implements UserService {
         Page<UserMO> pageBo = userDao.findByEmailAndMobile(email, mobile, pageRequest);
         PageJson<UserDTO> data = new PageJson<>();
         data.setPageSize(size);
-        data.setPageNum(num);
+        data.setPageNum(Integer.valueOf(pageNum));
         data.setPageTotal(pageBo.getTotalPages());
         data.setDataTotal(pageBo.getTotalElements());
         List<UserMO> content = pageBo.getContent();

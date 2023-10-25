@@ -1,6 +1,10 @@
 package com.chances.chancesuser;
 
 import com.chances.chancesuser.cuenum.UserStatusCode;
+import com.chances.chancesuser.dao.UserDao;
+import com.chances.chancesuser.exception.LockException;
+import com.chances.chancesuser.exception.PwdNotMatchException;
+import com.chances.chancesuser.model.UserMO;
 import com.chances.chancesuser.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -17,6 +21,10 @@ import javax.annotation.Resource;
 import java.io.File;
 import java.io.FileInputStream;
 
+import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+
 @SpringBootTest
 @AutoConfigureMockMvc
 @SuppressWarnings("all")
@@ -28,9 +36,11 @@ class ChancesUserApplicationTests {
 
     @Resource
     private UserService userService;
+    @Resource
+    private UserDao userDao;
 
     //登录页_登录_登录成功 测试生成
-    public static final String TOKEN = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbmxwYyIsImlhdCI6MTY5ODIxNzI2MCwiZXhwIjoxNjk4MjIwODYwfQ.xXFkLYU_dqv9qBgddS6FiEX8-cLKCrI2tFh269QT_mMMttXV9n1HGKjo-wtqccjGijBhzo_KcFFAcOki7WnDUg";
+    public static final String TOKEN = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbmxwYyIsImlhdCI6MTY5ODIyNDE3MCwiZXhwIjoxNjk4MjI3NzcwfQ.PmbFn0R3INdYaFy7Up3Ru32UalvSvSwa34byIa8HjR7yFizsRRRl5AeZSAPLvEOIjj8HrGz8UhVEboNKr_wOEA";
 
     @Resource
     private MockMvc mockMvc;
@@ -43,7 +53,10 @@ class ChancesUserApplicationTests {
                         .param("loginName", "adminlpc")
                         .param("password", "qwerty"))
                 .andDo(MockMvcResultHandlers.print()) // 打印响应内容
-                .andExpect(MockMvcResultMatchers.status().isOk());
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(jsonPath("$.data", hasKey("token"))) //存在token
+                .andExpect(jsonPath("$.msg", is("登录成功")))
+                .andExpect(jsonPath("$.code", is(200)));
     }
 
     @Test
@@ -54,7 +67,10 @@ class ChancesUserApplicationTests {
                         .param("loginName", "adminlpc")
                         .param("password", "qwerty1111"))
                 .andDo(MockMvcResultHandlers.print()) // 打印响应内容
-                .andExpect(MockMvcResultMatchers.status().isOk());
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(jsonPath("$.code", is(PwdNotMatchException.CODE))) // 使用jsonPath断言code的值
+                .andExpect(jsonPath("$.msg", is("用户名或密码错误"))) // 使用jsonPath断言msg的值
+                .andExpect(jsonPath("$.data", is(nullValue()))); // 使用jsonPath断言data的值;
     }
 
     @Test
@@ -65,19 +81,12 @@ class ChancesUserApplicationTests {
                         .param("loginName", "admin")
                         .param("password", "qwerty"))
                 .andDo(MockMvcResultHandlers.print()) // 打印响应内容
-                .andExpect(MockMvcResultMatchers.status().isOk());
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(jsonPath("$.data", is(nullValue())))
+                .andExpect(jsonPath("$.msg", is("用户被锁定")))
+                .andExpect(jsonPath("$.code", is(LockException.CODE)));
     }
 
-
-    @Test
-    public void 后台页_登出() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/user/logout")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"name\": \"example\"}")
-                        .header("token", TOKEN))
-                .andDo(MockMvcResultHandlers.print()) // 打印响应内容
-                .andExpect(MockMvcResultMatchers.status().isOk());
-    }
 
     // TODO: 未登录调用返回不了结果  直接调用可以返回
     @Test
@@ -88,7 +97,10 @@ class ChancesUserApplicationTests {
                         .content("{\"name\": \"example\"}")
                         .header("token", TOKEN))
                 .andDo(MockMvcResultHandlers.print()) // 打印响应内容
-                .andExpect(MockMvcResultMatchers.status().isOk());
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(jsonPath("$.data.jsonList", iterableWithSize(10)))  //包含10条数据
+                .andExpect(jsonPath("$.msg", is("条件分页")))
+                .andExpect(jsonPath("$.code", is(200)));
     }
 
     @Test
@@ -102,7 +114,13 @@ class ChancesUserApplicationTests {
                         .param("email", "testuser")
                         .param("mobile", "4"))
                 .andDo(MockMvcResultHandlers.print()) // 打印响应内容
-                .andExpect(MockMvcResultMatchers.status().isOk());
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(jsonPath("$.code", is(200)))
+                .andExpect(jsonPath("$.msg", is("条件分页")))
+                //每个手机号都包含4
+                .andExpect(jsonPath("$.data.jsonList[*].mobile", everyItem(containsString("4"))))
+                //每个邮箱都包含testuser
+                .andExpect(jsonPath("$.data.jsonList[*].email", everyItem(containsString("testuser"))));
     }
 
     @Test
@@ -115,7 +133,11 @@ class ChancesUserApplicationTests {
                         .param("pageNum", "2")
                 )
                 .andDo(MockMvcResultHandlers.print()) // 打印响应内容
-                .andExpect(MockMvcResultMatchers.status().isOk());
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(jsonPath("$.code", is(200)))
+                .andExpect(jsonPath("$.msg", is("条件分页")))
+                //第二页
+                .andExpect(jsonPath("$.data.pageNum", is(2)));
     }
 
     @Test
@@ -128,7 +150,9 @@ class ChancesUserApplicationTests {
                         .param("pageSize", "20")
                 )
                 .andDo(MockMvcResultHandlers.print()) // 打印响应内容
-                .andExpect(MockMvcResultMatchers.status().isOk());
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                //每页20
+                .andExpect(jsonPath("$.data.pageSize", is(20)));
     }
 
     @Test
@@ -141,7 +165,10 @@ class ChancesUserApplicationTests {
                         .header("token", TOKEN)
                 )
                 .andDo(MockMvcResultHandlers.print()) // 打印响应内容
-                .andExpect(MockMvcResultMatchers.status().isOk());
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(jsonPath("$.code", is(200)))
+                .andExpect(jsonPath("$.msg", is("用户信息")))
+                .andExpect(jsonPath("$.data.loginName", is("adminlpc")));
     }
 
     @Test
@@ -155,9 +182,9 @@ class ChancesUserApplicationTests {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andDo(MockMvcResultHandlers.print())
                 .andReturn();
-        // 从MvcResult中获取响应内容
-        String responseBody = result.getResponse().getContentAsString();
-        System.out.println("Response Body: " + responseBody);
+        String mobile = userDao.findById(Long.valueOf(userId)).orElse(null).getMobile();
+        // 断言mobile的值是否等于"1888888888"
+        assertEquals("1888888888", mobile);
     }
 
     @Test
@@ -170,9 +197,10 @@ class ChancesUserApplicationTests {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andDo(MockMvcResultHandlers.print())
                 .andReturn();
-        // 从MvcResult中获取响应内容
-        String responseBody = result.getResponse().getContentAsString();
-        System.out.println("Response Body: " + responseBody);
+
+        UserMO userMO = userService.findByName("lpcNew");
+        // 断言不为null
+        assertNotNull(userMO);
     }
 
     @Test
@@ -202,9 +230,6 @@ class ChancesUserApplicationTests {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andDo(MockMvcResultHandlers.print())
                 .andReturn();
-        // 从MvcResult中获取响应内容
-        String responseBody = result.getResponse().getContentAsString();
-        System.out.println("Response Body: " + responseBody);
     }
 
     @Test
@@ -224,9 +249,6 @@ class ChancesUserApplicationTests {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andDo(MockMvcResultHandlers.print())
                 .andReturn();
-        // 从MvcResult中获取响应内容
-        String responseBody = result.getResponse().getContentAsString();
-        System.out.println("Response Body: " + responseBody);
     }
 
     @Test
@@ -241,9 +263,6 @@ class ChancesUserApplicationTests {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andDo(MockMvcResultHandlers.print())
                 .andReturn();
-        // 从MvcResult中获取响应内容
-        String responseBody = result.getResponse().getContentAsString();
-        System.out.println("Response Body: " + responseBody);
     }
 
     @Test
@@ -257,8 +276,6 @@ class ChancesUserApplicationTests {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andDo(MockMvcResultHandlers.print())
                 .andReturn();
-        String responseBody = result.getResponse().getContentAsString();
-        System.out.println("Response Body: " + responseBody);
     }
 
     @Test
@@ -273,8 +290,6 @@ class ChancesUserApplicationTests {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andDo(MockMvcResultHandlers.print())
                 .andReturn();
-        String responseBody = result.getResponse().getContentAsString();
-        System.out.println("Response Body: " + responseBody);
     }
 
 
@@ -297,10 +312,6 @@ class ChancesUserApplicationTests {
                     .andExpect(MockMvcResultMatchers.status().isOk())
                     .andDo(MockMvcResultHandlers.print())
                     .andReturn();
-
-            // 从MvcResult中获取响应内容
-            String responseBody = result.getResponse().getContentAsString();
-            System.out.println("Response Body: " + responseBody);
         }
     }
 
@@ -323,10 +334,6 @@ class ChancesUserApplicationTests {
                     .andExpect(MockMvcResultMatchers.status().isOk())
                     .andDo(MockMvcResultHandlers.print())
                     .andReturn();
-
-            // 从MvcResult中获取响应内容
-            String responseBody = result.getResponse().getContentAsString();
-            System.out.println("Response Body: " + responseBody);
         }
     }
 
@@ -348,9 +355,17 @@ class ChancesUserApplicationTests {
                     .andExpect(MockMvcResultMatchers.status().isOk())
                     .andDo(MockMvcResultHandlers.print())
                     .andReturn();
-            // 从MvcResult中获取响应内容
-            String responseBody = result.getResponse().getContentAsString();
-            System.out.println("Response Body: " + responseBody);
         }
+    }
+
+    @Test
+    public void 后台页_登出() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/user/logout")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("token", TOKEN))
+                .andDo(MockMvcResultHandlers.print()) // 打印响应内容
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(jsonPath("$.msg", is("退出成功")))
+                .andExpect(jsonPath("$.code", is(200)));
     }
 }
