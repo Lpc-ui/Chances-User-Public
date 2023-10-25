@@ -68,6 +68,13 @@ public class R<T> implements Serializable {
         return info;
     }
 
+    public static R failed(BaseException exception) {
+        R info = new R();
+        info.setCode(exception.getCODE());
+        info.setMsg(exception.getMessage());
+        return info;
+    }
+
     public R() {
     }
 

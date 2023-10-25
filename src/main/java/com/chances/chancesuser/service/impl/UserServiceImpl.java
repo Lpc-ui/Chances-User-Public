@@ -8,6 +8,7 @@ import com.chances.chancesuser.cuenum.UserStatusCode;
 import com.chances.chancesuser.dao.UserDao;
 import com.chances.chancesuser.dto.UserDTO;
 import com.chances.chancesuser.exception.CuException;
+import com.chances.chancesuser.exception.LockException;
 import com.chances.chancesuser.exception.PwdNotMatchException;
 import com.chances.chancesuser.model.UserMO;
 import com.chances.chancesuser.service.UserService;
@@ -74,9 +75,9 @@ public class UserServiceImpl implements UserService {
         if (ObjectUtils.isEmpty(userMO)) throw new PwdNotMatchException();
         if (!PasswordUtils.matchPassword(password, userMO.getPassword())) throw new PwdNotMatchException();
         if (userMO.getStatus().equals(UserStatusCode.LOCK.code()))
-            throw new CuException(UserStatusCode.LOCK.describe());
+            throw new LockException();
         if (userMO.getStatus().equals(UserStatusCode.DISABLE.code()))
-            throw new CuException(UserStatusCode.DISABLE.describe());
+            throw new LockException();
         String token = jwtUtils.generateToken(loginName);
         userDao.updateLastLoginTimeById(userMO.getId(), LocalDateTime.now());
         return token;

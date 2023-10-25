@@ -21,7 +21,7 @@ public class GlobalExceptionConfig {
         // 打印堆栈，以供调试
         e.printStackTrace();
         // 返回给前端
-        return R.failed(ErrorCode.CU_EX, e.getMessage());
+        return R.failed(new CuException());
     }
 
     // 拦截：其它所有异常
@@ -35,21 +35,21 @@ public class GlobalExceptionConfig {
     @ExceptionHandler(NotLoginException.class)
     public R handlerException(NotLoginException e) {
         e.printStackTrace();
-        return R.failed(ErrorCode.SYS_LOGIN_NO, ErrorCode.SYS_LOGIN_NO.getMessage());
+        return R.failed(new NotLoginException());
     }
 
     // 拦截：锁定异常
     @ExceptionHandler(LockException.class)
     public R handlerException(LockException e) {
         e.printStackTrace();
-        return R.failed(ErrorCode.SYS_NO_PERMISSION, ErrorCode.SYS_NO_PERMISSION.getMessage());
+        return R.failed(new LockException());
     }
 
-    // 拦截：锁定异常
+    // 拦截：密码异常
     @ExceptionHandler(PwdNotMatchException.class)
     public R handlerException(PwdNotMatchException e) {
         e.printStackTrace();
-        return R.failed(ErrorCode.USER_PWD_ERR, ErrorCode.USER_PWD_ERR.getMessage());
+        return R.failed(new PwdNotMatchException());
     }
 
 }
