@@ -154,4 +154,19 @@ class ChancesUserApplicationTests {
         String responseBody = result.getResponse().getContentAsString();
         System.out.println("Response Body: " + responseBody);
     }
+
+    @Test
+    public void 用户管理_新增用户() throws Exception {
+        String requestBody = "{\"loginName\": \"lpcNew\",\"mobile\": \"1353000333\",\"email\": \"fsafsfa@gmial.com\"}";
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/user/add")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("token", TOKEN)
+                        .content(requestBody))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcResultHandlers.print())
+                .andReturn();
+        // 从MvcResult中获取响应内容
+        String responseBody = result.getResponse().getContentAsString();
+        System.out.println("Response Body: " + responseBody);
+    }
 }
