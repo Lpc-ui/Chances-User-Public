@@ -20,7 +20,7 @@ public class UserController {
      * @param password  密码
      * @return token
      */
-    @RequestMapping(value = "/user/login", method = {RequestMethod.POST})
+    @PostMapping(value = "/user/login")
     private Result userLogin(@RequestParam("loginName") String loginName,
                              @RequestParam("password") String password) {
         String token = userService.userLogin(loginName, password);
@@ -34,7 +34,7 @@ public class UserController {
      * @param userDTO userDTO
      * @return R
      */
-    @RequestMapping(value = "/user/add", method = {RequestMethod.POST})
+    @PostMapping(value = "/user/add")
     private Result userAdd(@RequestBody UserDTO userDTO) {
         userService.add(userDTO);
         return Result.ok().setMsg("创建成功");
@@ -47,7 +47,7 @@ public class UserController {
      * @param token token
      * @return ok
      */
-    @RequestMapping(value = "/user/logout", method = {RequestMethod.GET})
+    @GetMapping(value = "/user/logout")
     private Result logout(@RequestHeader String token) throws Exception {
         userService.logout(token);
         return Result.ok().setMsg("退出成功");
@@ -61,7 +61,7 @@ public class UserController {
      * @param pageSize pageSize
      * @param pageNum  pageNum
      */
-    @RequestMapping(value = "/user/list", method = {RequestMethod.GET})
+    @GetMapping(value = "/user/list")
     private Result userList(@RequestParam(required = false) String email,
                             @RequestParam(required = false) String mobile,
                             @RequestParam(required = false, defaultValue = "10") String pageSize,
