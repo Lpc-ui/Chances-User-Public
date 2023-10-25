@@ -26,7 +26,7 @@ class ChancesUserApplicationTests {
     private UserService userService;
 
     //登录页_登录_登录成功 测试生成
-    public static final String TOKEN = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbmxwYyIsImlhdCI6MTY5ODIxMjM0NiwiZXhwIjoxNjk4MjE1OTQ2fQ.gC3egYQcteTzZOA0PcYUyJ67eyhNhjXY-Eo28KDTPd3csul7vzWPiU9Ku5a1MbztHRoluy6jy6n1lMm0CrpYAg";
+    public static final String TOKEN = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbmxwYyIsImlhdCI6MTY5ODIxNjQ2MywiZXhwIjoxNjk4MjIwMDYzfQ.a40QPJGPseVwA9uxsZ6Rthp5e2YuQHz-y1dFw3q-iC94SpX5o9C1IX8XItlaw_Lam4hZK6MKGZL1vnmXl3Om7Q";
 
     @Resource
     private MockMvc mockMvc;
@@ -207,5 +207,21 @@ class ChancesUserApplicationTests {
     public void 解锁_非接口() {
         String userId = "24";
         userService.lock(userId, String.valueOf(UserStatusCode.OK.code()));
+    }
+
+    @Test
+    public void 头像_用户信息() throws Exception {
+        // 0 表示获取当前登录用户的信息
+        String userId = "0";
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/user/" + userId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("token", TOKEN)
+                )
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcResultHandlers.print())
+                .andReturn();
+        // 从MvcResult中获取响应内容
+        String responseBody = result.getResponse().getContentAsString();
+        System.out.println("Response Body: " + responseBody);
     }
 }

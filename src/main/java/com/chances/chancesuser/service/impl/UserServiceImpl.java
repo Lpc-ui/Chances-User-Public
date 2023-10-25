@@ -125,8 +125,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDTO userInfo(String userId) {
-        UserMO userMO = userDao.findById(Long.valueOf(userId)).orElse(null);
+    public UserDTO userInfo(String userId, String token) {
+        UserMO userMO = userId.equals("0") ? userDao.findByLoginName(jwtUtils.getUsernameFromToken(token)) : userDao.findById(Long.valueOf(userId)).orElse(null);
         UserDTO userDTO = BeanCopyUtil.copyBeanProperties(userMO, UserDTO::new);
         userDTO.setAvata(null);
         userDTO.setStatus(null);
@@ -136,8 +136,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void userUpdate(String userId, UserDTO userDTO) {
-        UserMO userMO = userDao.findById(Long.valueOf(userId)).orElse(null);
+    public void userUpdate(String userId, UserDTO userDTO, String token) {
+        UserMO userMO = userId.equals("0") ? userDao.findByLoginName(jwtUtils.getUsernameFromToken(token)) : userDao.findById(Long.valueOf(userId)).orElse(null);
         if (userMO == null) throw new CuException("参数有误");
         if (ObjectUtils.isNotEmpty(userDTO.getStatus())) userMO.setStatus(userDTO.getStatus());
         if (ObjectUtils.isNotEmpty(userDTO.getAdmin())) userMO.setAdmin(userDTO.getAdmin());

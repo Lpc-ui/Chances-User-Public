@@ -94,8 +94,8 @@ public class UserController {
      * @param userId 用户id
      */
     @GetMapping(value = "/user/{userId}")
-    private R userInfo(@PathVariable String userId) {
-        return R.ok(userService.userInfo(userId)).setMsg("用户信息");
+    private R userInfo(@PathVariable String userId, @RequestHeader String token) {
+        return R.ok(userService.userInfo(userId, token)).setMsg("用户信息");
     }
 
     /**
@@ -104,8 +104,8 @@ public class UserController {
      * @param userId 用户id
      */
     @PutMapping(value = "/user/{userId}")
-    private R userUpdate(@PathVariable String userId, @RequestBody UserDTO userDTO) {
-        userService.userUpdate(userId, userDTO);
+    private R userUpdate(@PathVariable String userId, @RequestBody UserDTO userDTO, @RequestHeader String token) {
+        userService.userUpdate(userId, userDTO, token);
         return R.ok().setMsg("修改成功");
     }
 

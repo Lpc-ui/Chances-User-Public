@@ -64,16 +64,18 @@ public interface UserService extends BaseService {
      * 用户信息
      *
      * @param userId 用户ID
+     * @param token  当前登录用户[userID为传递0]
      */
-    UserDTO userInfo(String userId);
+    UserDTO userInfo(String userId, String token);
 
     /**
      * 更新用户信息
      *
      * @param userId  用户ID
      * @param userDTO 用户信息     | status | | admin |  | email |  | mobile |
+     * @param token   登录用户
      */
-    void userUpdate(String userId, UserDTO userDTO);
+    void userUpdate(String userId, UserDTO userDTO, String token);
 
     /**
      * 用户锁定与解锁
