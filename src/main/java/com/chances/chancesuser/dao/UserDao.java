@@ -19,6 +19,15 @@ public interface UserDao extends BaseDao<UserMO> {
 
     boolean existsByMobile(String mobile);
 
+
+    /**
+     * 更新密码
+     */
+    @Modifying
+    @Transactional
+    @Query("UPDATE UserMO u SET u.password = :password WHERE u.id = :id")
+    void updatePasswordById(@Param("id") Long id, @Param("password") String password);
+
     /**
      * 更新登录时间
      *

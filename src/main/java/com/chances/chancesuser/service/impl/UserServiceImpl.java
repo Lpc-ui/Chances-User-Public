@@ -138,4 +138,15 @@ public class UserServiceImpl implements UserService {
         userDao.updateStatusById(Long.parseLong(userId), Integer.parseInt(status));
     }
 
+    @Override
+    public void password(String oldPassword, String newPassword, String token) {
+        String username = jwtUtils.getUsernameFromToken(token);
+        UserMO userMO = userDao.findByLoginName(username);
+        if (!PasswordUtils.matchPassword(oldPassword, userMO.getPassword())) throw new CuException("原密码有误");
+        if (StringUtils.isEmpty(newPassword)) throw new CuException("请输入新密码");
+        userDao.updatePasswordById(userMO.getId(), PasswordUtils.encodePassword(newPassword));
+        //移除token[退出登录]
+        jwtUtils.invalidateToken(username);
+    }
+
 }

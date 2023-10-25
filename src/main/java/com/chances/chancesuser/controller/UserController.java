@@ -108,6 +108,7 @@ public class UserController {
         return R.ok().setMsg("修改成功");
     }
 
+
     /**
      * 用户锁定与解锁
      *
@@ -117,6 +118,19 @@ public class UserController {
     @PostMapping(value = "user/update/status")
     private R lock(String status, String userId) {
         userService.lock(userId, status);
+        return R.ok().setMsg("更新成功");
+    }
+
+
+    /**
+     * 用户修改密码
+     *
+     * @param oldPassword 旧密码
+     * @param newPassword 新密码
+     */
+    @PostMapping(value = "user/update/password")
+    private R password(String oldPassword, String newPassword, @RequestHeader String token) {
+        userService.password(oldPassword, newPassword, token);
         return R.ok().setMsg("更新成功");
     }
 }

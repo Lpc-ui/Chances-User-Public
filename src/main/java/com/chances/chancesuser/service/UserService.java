@@ -79,4 +79,12 @@ public interface UserService extends BaseService {
      */
     void lock(String userId, String status);
 
+    /**
+     * 修改密码
+     *
+     * @param oldPassword 旧密码
+     * @param newPassword 新密码
+     * @param token       当前用户
+     */
+    void password(String oldPassword, String newPassword, String token);
 }
