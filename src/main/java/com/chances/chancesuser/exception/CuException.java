@@ -18,7 +18,7 @@ public class CuException extends BaseException {
     }
 
     public CuException(String msg) {
-        super(BE_MESSAGE);
+        super(msg);
         super.setCODE(CuException.CODE);
     }
 

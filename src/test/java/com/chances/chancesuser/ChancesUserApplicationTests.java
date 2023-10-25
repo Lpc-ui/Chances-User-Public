@@ -243,6 +243,21 @@ class ChancesUserApplicationTests {
     }
 
     @Test
+    public void 头像_修改密码_修改失败() throws Exception {
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/user/update/password")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("token", TOKEN)
+                        .param("oldPassword", "errorpassword")
+                        //新的密码
+                        .param("newPassword", "qwertyu"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcResultHandlers.print())
+                .andReturn();
+        String responseBody = result.getResponse().getContentAsString();
+        System.out.println("Response Body: " + responseBody);
+    }
+
+    @Test
     public void 头像_修改密码_修改成功() throws Exception {
         //注意:::修改密码后需要重新登录生成新的TOKEN
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/user/update/password")
