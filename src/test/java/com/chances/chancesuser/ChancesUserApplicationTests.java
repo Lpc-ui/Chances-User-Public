@@ -327,4 +327,28 @@ class ChancesUserApplicationTests {
             System.out.println("Response Body: " + responseBody);
         }
     }
+
+    @Test
+    public void 头像_上传头像_文件类型错误() throws Exception {
+        File file1 = new File("/Users/lipengcheng/Chances-User/src/images/adminlpc.pdf");
+        try (FileInputStream fileInputStream = new FileInputStream(file1)) {
+            // 创建一个模拟的MultipartFile
+            MockMultipartFile file = new MockMultipartFile(
+                    "file", // 请求参数名，应与Controller中@RequestParam("file")的名称匹配
+                    "adminlpc.pdf", // 文件名
+                    MediaType.APPLICATION_PDF.toString(), // 文件类型
+                    fileInputStream // 文件内容
+            );
+
+            // 发送POST请求，模拟文件上传
+            MvcResult result = mockMvc.perform(MockMvcRequestBuilders.multipart("/user/avatar/upload").file(file)
+                            .header("token", TOKEN))
+                    .andExpect(MockMvcResultMatchers.status().isOk())
+                    .andDo(MockMvcResultHandlers.print())
+                    .andReturn();
+            // 从MvcResult中获取响应内容
+            String responseBody = result.getResponse().getContentAsString();
+            System.out.println("Response Body: " + responseBody);
+        }
+    }
 }
