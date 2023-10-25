@@ -98,6 +98,7 @@ class ChancesUserApplicationTests {
                 .andDo(MockMvcResultHandlers.print()) // 打印响应内容
                 .andExpect(MockMvcResultMatchers.status().isOk());
     }
+
     @Test
     public void 用户管理_用户列表_下一页() throws Exception {
         String path = "/user/list";
@@ -105,7 +106,20 @@ class ChancesUserApplicationTests {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"name\": \"example\"}")
                         .header("token", TOKEN)
-                        .param("pageSize", "2")
+                        .param("pageNum", "2")
+                )
+                .andDo(MockMvcResultHandlers.print()) // 打印响应内容
+                .andExpect(MockMvcResultMatchers.status().isOk());
+    }
+
+    @Test
+    public void 用户管理_用户列表_设置单页数据量() throws Exception {
+        String path = "/user/list";
+        mockMvc.perform(MockMvcRequestBuilders.get(path)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"name\": \"example\"}")
+                        .header("token", TOKEN)
+                        .param("pageSize", "20")
                 )
                 .andDo(MockMvcResultHandlers.print()) // 打印响应内容
                 .andExpect(MockMvcResultMatchers.status().isOk());
