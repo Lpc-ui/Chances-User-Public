@@ -19,6 +19,7 @@ import java.io.FileInputStream;
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@SuppressWarnings("all")
 class ChancesUserApplicationTests {
 
     @Test
@@ -302,6 +303,7 @@ class ChancesUserApplicationTests {
             System.out.println("Response Body: " + responseBody);
         }
     }
+
     @Test
     public void 头像_上传头像_文件过大() throws Exception {
         File file1 = new File("/Users/lipengcheng/Chances-User/src/images/big-file-test.png");
