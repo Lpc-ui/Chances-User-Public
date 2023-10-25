@@ -224,4 +224,21 @@ class ChancesUserApplicationTests {
         String responseBody = result.getResponse().getContentAsString();
         System.out.println("Response Body: " + responseBody);
     }
+
+    @Test
+    public void 头像_用户信息_信息修改() throws Exception {
+        // 0 表示获取当前登录用户的信息
+        String userId = "0";
+        String requestBody = "{\"mobile\": \"199999999\"}";
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.put("/user/" + userId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("token", TOKEN)
+                        .content(requestBody))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcResultHandlers.print())
+                .andReturn();
+        // 从MvcResult中获取响应内容
+        String responseBody = result.getResponse().getContentAsString();
+        System.out.println("Response Body: " + responseBody);
+    }
 }
