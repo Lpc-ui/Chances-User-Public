@@ -54,6 +54,7 @@ public class HeaderLoggingFilter implements Filter {
             String userName;
             try {
                 userName = jwtUtils.getUsernameFromToken(token);
+                if (!jwtUtils.isTokenValid(token, userName)) throw new RuntimeException();
             } catch (Exception e) {
                 e.printStackTrace();
                 ServletKit.getRequest().setAttribute("exception", new NotLoginException());

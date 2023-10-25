@@ -24,7 +24,7 @@ class ChancesUserApplicationTests {
     private UserService userService;
 
     //登录页_登录_登录成功 测试生成
-    public static final String TOKEN = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbmxwYyIsImlhdCI6MTY5ODIwODMzNSwiZXhwIjoxNjk4MjExOTM1fQ.Hbk6_ldDg1HsJwNAQqEV4KMGxPDLiO9_ucQlCo2vQOZgbL5NgXR-dorg_0LPX5B609Jr8U_v2FzNPSn-QJrmnw";
+    public static final String TOKEN = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbmxwYyIsImlhdCI6MTY5ODIxMjM0NiwiZXhwIjoxNjk4MjE1OTQ2fQ.gC3egYQcteTzZOA0PcYUyJ67eyhNhjXY-Eo28KDTPd3csul7vzWPiU9Ku5a1MbztHRoluy6jy6n1lMm0CrpYAg";
 
     @Resource
     private MockMvc mockMvc;
@@ -63,13 +63,24 @@ class ChancesUserApplicationTests {
     }
 
 
-
     @Test
     public void 后台页_登出() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/user/logout")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"name\": \"example\"}")
                         .header("token", TOKEN))
                 .andDo(MockMvcResultHandlers.print()) // 打印响应内容
                 .andExpect(MockMvcResultMatchers.status().isOk());
     }
 
+    @Test
+    public void 用户管理_用户列表() throws Exception {
+        String path = "/user/list";
+        mockMvc.perform(MockMvcRequestBuilders.get(path)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"name\": \"example\"}")
+                        .header("token", TOKEN))
+                .andDo(MockMvcResultHandlers.print()) // 打印响应内容
+                .andExpect(MockMvcResultMatchers.status().isOk());
+    }
 }

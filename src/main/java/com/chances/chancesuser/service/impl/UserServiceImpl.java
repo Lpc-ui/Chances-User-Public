@@ -20,6 +20,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -29,6 +30,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -84,7 +86,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void logout(String token) throws Exception {
+    public void logout(String token) {
         String userName = jwtUtils.getUsernameFromToken(token);
         if (StringUtils.isEmpty(userName)) return;
         jwtUtils.invalidateToken(userName);
@@ -96,18 +98,24 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public PageJson<UserMO> userList(String email, String mobile, String pageNum, String pageSize) {
+    public PageJson<UserDTO> userList(String email, String mobile, String pageNum, String pageSize) {
         int size = Integer.parseInt(pageSize);
         int num = Integer.parseInt(pageNum) - 1;
-        PageRequest pageRequest = PageRequest.of(num, size);
+        PageRequest pageRequest = PageRequest.of(num, size, Sort.by("lastLoginTime").descending());
         Page<UserMO> pageBo = userDao.findByEmailAndMobile(email, mobile, pageRequest);
-        PageJson<UserMO> data = new PageJson<>();
+        PageJson<UserDTO> data = new PageJson<>();
         data.setPageSize(size);
         data.setPageNum(num);
         data.setPageTotal(pageBo.getTotalPages());
         data.setDataTotal(pageBo.getTotalElements());
         List<UserMO> content = pageBo.getContent();
-        data.setJsonList(content);
+        List<UserDTO> userDTOS = BeanCopyUtil.copyListProperties(content, UserDTO::new);
+        List<UserDTO> userDTOSNew = userDTOS.stream()
+                .peek(userDTO -> userDTO.setAvata(null))
+                .peek(userDTO -> userDTO.setPassword(null))
+                .peek(userDTO -> userDTO.setLastLoginTime(null))
+                .collect(Collectors.toList());
+        data.setJsonList(userDTOSNew);
         return data;
     }
 
