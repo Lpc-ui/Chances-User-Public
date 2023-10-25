@@ -54,7 +54,7 @@ public class UserController {
      * @return ok
      */
     @RequestMapping(value = "/user/login", method = {RequestMethod.GET})
-    private R logout(@RequestHeader String token) {
+    private R logout(@RequestHeader String token) throws Exception {
         userService.logout(token);
         return R.ok().setMsg("退出成功");
     }
@@ -129,7 +129,7 @@ public class UserController {
      * @param newPassword 新密码
      */
     @PostMapping(value = "user/update/password")
-    private R password(String oldPassword, String newPassword, @RequestHeader String token) {
+    private R password(String oldPassword, String newPassword, @RequestHeader String token) throws Exception {
         userService.password(oldPassword, newPassword, token);
         return R.ok().setMsg("更新成功");
     }

@@ -1,6 +1,7 @@
 package com.chances.chancesuser.utils;
 
 import com.chances.chancesuser.base.RedisService;
+import com.chances.chancesuser.exception.NotLoginException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -41,7 +42,7 @@ public class JwtUtils {
         return token;
     }
 
-    public String getUsernameFromToken(String token) {
+    public String getUsernameFromToken(String token) throws NotLoginException {
         Claims claims = Jwts.parser()
                 .setSigningKey(secret)
                 .parseClaimsJws(token)

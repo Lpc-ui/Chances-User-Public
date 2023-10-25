@@ -20,9 +20,4 @@ public class PasswordUtils {
     public static boolean matchPassword(String plainPassword, String encodedPassword) {
         return passwordEncoder.matches(plainPassword, encodedPassword);
     }
-
-    // 通过加密密码获取明文密码（仅用于找回密码等情况，不建议在正常业务中使用）
-    public static String decodePassword(String encodedPassword) {
-        throw new UnsupportedOperationException("不建议解密密码");
-    }
 }

@@ -5,6 +5,9 @@ import com.chances.chancesuser.base.PageJson;
 import com.chances.chancesuser.dto.UserDTO;
 import com.chances.chancesuser.model.UserMO;
 
+import javax.servlet.ServletException;
+import java.io.IOException;
+
 public interface UserService extends BaseService {
 
     void test();
@@ -29,7 +32,7 @@ public interface UserService extends BaseService {
      *
      * @param token token
      */
-    void logout(String token);
+    void logout(String token) throws Exception;
 
     /**
      * findByName
@@ -86,5 +89,5 @@ public interface UserService extends BaseService {
      * @param newPassword 新密码
      * @param token       当前用户
      */
-    void password(String oldPassword, String newPassword, String token);
+    void password(String oldPassword, String newPassword, String token) throws Exception;
 }

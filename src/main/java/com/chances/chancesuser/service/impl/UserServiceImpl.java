@@ -76,7 +76,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void logout(String token) {
+    public void logout(String token) throws Exception {
         String userName = jwtUtils.getUsernameFromToken(token);
         if (StringUtils.isEmpty(userName)) return;
         jwtUtils.invalidateToken(userName);
@@ -139,7 +139,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void password(String oldPassword, String newPassword, String token) {
+    public void password(String oldPassword, String newPassword, String token) throws Exception {
         String username = jwtUtils.getUsernameFromToken(token);
         UserMO userMO = userDao.findByLoginName(username);
         if (!PasswordUtils.matchPassword(oldPassword, userMO.getPassword())) throw new CuException("原密码有误");

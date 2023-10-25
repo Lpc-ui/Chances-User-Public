@@ -1,10 +1,12 @@
 package com.chances.chancesuser.filter;
 
 import com.chances.chancesuser.cuenum.UserStatusCode;
-import com.chances.chancesuser.exception.CuException;
+import com.chances.chancesuser.exception.LockException;
+import com.chances.chancesuser.exception.NotLoginException;
 import com.chances.chancesuser.model.UserMO;
 import com.chances.chancesuser.service.UserService;
 import com.chances.chancesuser.utils.JwtUtils;
+import com.chances.chancesuser.utils.ServletKit;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
@@ -47,15 +49,23 @@ public class HeaderLoggingFilter implements Filter {
         } else {
             // 获取请求头中的header信息
             String token = ((HttpServletRequest) request).getHeader("token");
-            if (StringUtils.isEmpty(token)) throw new CuException("未登录");
+            if (StringUtils.isEmpty(token)) throw new NotLoginException();
             // 在此处处理headerValue，可以打印、记录、验证等操作
-            String userName = jwtUtils.getUsernameFromToken(token);
+            String userName;
+            try {
+                userName = jwtUtils.getUsernameFromToken(token);
+            } catch (Exception e) {
+                e.printStackTrace();
+                ServletKit.getRequest().setAttribute("exception", new NotLoginException());
+                ServletKit.getRequest().getRequestDispatcher("/error").forward(ServletKit.getRequest(), ServletKit.getResponse());
+                return;
+            }
             log.info(userName + ":" + "登录");
             log.info(token + ":" + "token");
             UserMO userMO = userService.findByName(userName);
             Integer status = userMO.getStatus();
-            if (status.equals(UserStatusCode.LOCK.code())) throw new CuException(UserStatusCode.LOCK.describe());
-            if (status.equals(UserStatusCode.DISABLE.code())) throw new CuException(UserStatusCode.DISABLE.describe());
+            if (status.equals(UserStatusCode.LOCK.code())) throw new LockException();
+            if (status.equals(UserStatusCode.DISABLE.code())) throw new LockException();
             // 继续处理请求
             chain.doFilter(request, response);
         }
