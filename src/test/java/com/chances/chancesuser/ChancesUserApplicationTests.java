@@ -19,8 +19,12 @@ class ChancesUserApplicationTests {
     @Test
     void contextLoads() {
     }
+
     @Resource
     private UserService userService;
+
+    //登录页_登录_登录成功 测试生成
+    public static final String TOKEN = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbmxwYyIsImlhdCI6MTY5ODIwODMzNSwiZXhwIjoxNjk4MjExOTM1fQ.Hbk6_ldDg1HsJwNAQqEV4KMGxPDLiO9_ucQlCo2vQOZgbL5NgXR-dorg_0LPX5B609Jr8U_v2FzNPSn-QJrmnw";
 
     @Resource
     private MockMvc mockMvc;
@@ -54,6 +58,16 @@ class ChancesUserApplicationTests {
                         .content("{\"name\": \"example\"}")
                         .param("loginName", "admin")
                         .param("password", "qwerty"))
+                .andDo(MockMvcResultHandlers.print()) // 打印响应内容
+                .andExpect(MockMvcResultMatchers.status().isOk());
+    }
+
+
+
+    @Test
+    public void 后台页_登出() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/user/logout")
+                        .header("token", TOKEN))
                 .andDo(MockMvcResultHandlers.print()) // 打印响应内容
                 .andExpect(MockMvcResultMatchers.status().isOk());
     }
