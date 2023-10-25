@@ -10,7 +10,7 @@ import com.chances.chancesuser.dto.UserDTO;
 import com.chances.chancesuser.exception.CuException;
 import com.chances.chancesuser.exception.LockException;
 import com.chances.chancesuser.exception.PwdNotMatchException;
-import com.chances.chancesuser.model.UserMO;
+import com.chances.chancesuser.model.User;
 import com.chances.chancesuser.service.UserService;
 import com.chances.chancesuser.utils.BeanCopyUtil;
 import com.chances.chancesuser.utils.JwtUtils;
@@ -46,7 +46,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void test() {
-        UserMO entity = new UserMO();
+        User entity = new User();
         entity.setLoginName("李鹏成");
         entity.setPassword("12345");
         entity.setMobile("18286703704");
@@ -68,21 +68,21 @@ public class UserServiceImpl implements UserService {
         //初始密码
         userDTO.setLastLoginTime(LocalDateTime.now());
         userDTO.setPassword(PasswordUtils.encodePassword(defaultPassword));
-        UserMO userMO = BeanCopyUtil.copyBeanProperties(userDTO, UserMO::new);
-        userDao.insert(userMO);
+        User user = BeanCopyUtil.copyBeanProperties(userDTO, User::new);
+        userDao.insert(user);
     }
 
     @Override
     public String userLogin(String loginName, String password) {
-        UserMO userMO = userDao.findByLoginName(loginName);
-        if (ObjectUtils.isEmpty(userMO)) throw new PwdNotMatchException();
-        if (!PasswordUtils.matchPassword(password, userMO.getPassword())) throw new PwdNotMatchException();
-        if (userMO.getStatus().equals(UserStatusCode.LOCK.code()))
+        User user = userDao.findByLoginName(loginName);
+        if (ObjectUtils.isEmpty(user)) throw new PwdNotMatchException();
+        if (!PasswordUtils.matchPassword(password, user.getPassword())) throw new PwdNotMatchException();
+        if (user.getStatus().equals(UserStatusCode.LOCK.code()))
             throw new LockException();
-        if (userMO.getStatus().equals(UserStatusCode.DISABLE.code()))
+        if (user.getStatus().equals(UserStatusCode.DISABLE.code()))
             throw new LockException();
         String token = jwtUtils.generateToken(loginName);
-        userDao.updateLastLoginTimeById(userMO.getId(), LocalDateTime.now());
+        userDao.updateLastLoginTimeById(user.getId(), LocalDateTime.now());
         return token;
     }
 
@@ -94,7 +94,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserMO findByName(String userName) {
+    public User findByName(String userName) {
         return userDao.findByLoginName(userName);
     }
 
@@ -103,13 +103,13 @@ public class UserServiceImpl implements UserService {
         int size = Integer.parseInt(pageSize);
         int num = Integer.parseInt(pageNum) - 1;
         PageRequest pageRequest = PageRequest.of(num, size, Sort.by("lastLoginTime").descending());
-        Page<UserMO> pageBo = userDao.findByEmailAndMobile(email, mobile, pageRequest);
+        Page<User> pageBo = userDao.findByEmailAndMobile(email, mobile, pageRequest);
         PageJson<UserDTO> data = new PageJson<>();
         data.setPageSize(size);
         data.setPageNum(Integer.valueOf(pageNum));
         data.setPageTotal(pageBo.getTotalPages());
         data.setDataTotal(pageBo.getTotalElements());
-        List<UserMO> content = pageBo.getContent();
+        List<User> content = pageBo.getContent();
         List<UserDTO> userDTOS = BeanCopyUtil.copyListProperties(content, UserDTO::new);
         List<UserDTO> userDTOSNew = userDTOS.stream()
                 .peek(userDTO -> userDTO.setAvata(null))
@@ -127,8 +127,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDTO userInfo(String userId, String token) {
-        UserMO userMO = userId.equals("0") ? userDao.findByLoginName(jwtUtils.getUsernameFromToken(token)) : userDao.findById(Long.valueOf(userId)).orElse(null);
-        UserDTO userDTO = BeanCopyUtil.copyBeanProperties(userMO, UserDTO::new);
+        User user = userId.equals("0") ? userDao.findByLoginName(jwtUtils.getUsernameFromToken(token)) : userDao.findById(Long.valueOf(userId)).orElse(null);
+        UserDTO userDTO = BeanCopyUtil.copyBeanProperties(user, UserDTO::new);
         userDTO.setAvata(null);
         userDTO.setStatus(null);
         userDTO.setPassword(null);
@@ -138,16 +138,16 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void userUpdate(String userId, UserDTO userDTO, String token) {
-        UserMO userMO = userId.equals("0") ? userDao.findByLoginName(jwtUtils.getUsernameFromToken(token)) : userDao.findById(Long.valueOf(userId)).orElse(null);
-        if (userMO == null) throw new CuException("参数有误");
-        if (ObjectUtils.isNotEmpty(userDTO.getStatus())) userMO.setStatus(userDTO.getStatus());
-        if (ObjectUtils.isNotEmpty(userDTO.getAdmin())) userMO.setAdmin(userDTO.getAdmin());
-        if (ObjectUtils.isNotEmpty(userDTO.getEmail())) userMO.setEmail(userDTO.getEmail());
-        if (ObjectUtils.isNotEmpty(userDTO.getMobile())) userMO.setMobile(userDTO.getMobile());
+        User user = userId.equals("0") ? userDao.findByLoginName(jwtUtils.getUsernameFromToken(token)) : userDao.findById(Long.valueOf(userId)).orElse(null);
+        if (user == null) throw new CuException("参数有误");
+        if (ObjectUtils.isNotEmpty(userDTO.getStatus())) user.setStatus(userDTO.getStatus());
+        if (ObjectUtils.isNotEmpty(userDTO.getAdmin())) user.setAdmin(userDTO.getAdmin());
+        if (ObjectUtils.isNotEmpty(userDTO.getEmail())) user.setEmail(userDTO.getEmail());
+        if (ObjectUtils.isNotEmpty(userDTO.getMobile())) user.setMobile(userDTO.getMobile());
         //手机号校验
         if (ObjectUtils.isNotEmpty(userDTO.getMobile()) && userDao.existsByMobile(userDTO.getMobile()))
             throw new CuException("手机号重复");
-        userDao.save(userMO);
+        userDao.save(user);
     }
 
     @Override
@@ -158,10 +158,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public void password(String oldPassword, String newPassword, String token) throws Exception {
         String username = jwtUtils.getUsernameFromToken(token);
-        UserMO userMO = userDao.findByLoginName(username);
-        if (!PasswordUtils.matchPassword(oldPassword, userMO.getPassword())) throw new CuException("原密码有误");
+        User user = userDao.findByLoginName(username);
+        if (!PasswordUtils.matchPassword(oldPassword, user.getPassword())) throw new CuException("原密码有误");
         if (StringUtils.isEmpty(newPassword)) throw new CuException("请输入新密码");
-        userDao.updatePasswordById(userMO.getId(), PasswordUtils.encodePassword(newPassword));
+        userDao.updatePasswordById(user.getId(), PasswordUtils.encodePassword(newPassword));
         //移除token[退出登录]
         jwtUtils.invalidateToken(username);
     }

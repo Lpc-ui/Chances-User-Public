@@ -3,7 +3,7 @@ package com.chances.chancesuser.filter;
 import com.chances.chancesuser.cuenum.UserStatusCode;
 import com.chances.chancesuser.exception.LockException;
 import com.chances.chancesuser.exception.NotLoginException;
-import com.chances.chancesuser.model.UserMO;
+import com.chances.chancesuser.model.User;
 import com.chances.chancesuser.service.UserService;
 import com.chances.chancesuser.utils.JwtUtils;
 import com.chances.chancesuser.utils.ServletKit;
@@ -57,8 +57,8 @@ public class HeaderLoggingFilter implements Filter {
                 if (!jwtUtils.isTokenValid(token, userName)) throw new NotLoginException();
                 log.info(userName + ":" + "登录");
                 log.info(token + ":" + "token");
-                UserMO userMO = userService.findByName(userName);
-                Integer status = userMO.getStatus();
+                User user = userService.findByName(userName);
+                Integer status = user.getStatus();
                 if (status.equals(UserStatusCode.LOCK.code())) throw new LockException();
                 if (status.equals(UserStatusCode.DISABLE.code())) throw new LockException();
             } catch (Exception e) {

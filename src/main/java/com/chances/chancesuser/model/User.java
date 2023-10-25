@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 @Table(name = "user")
 @EqualsAndHashCode(callSuper = true)
 @ToString
-public class UserMO extends BaseModel {
+public class User extends BaseModel {
     /**
      * 登录名
      */
@@ -51,11 +51,11 @@ public class UserMO extends BaseModel {
      */
     private LocalDateTime lastLoginTime;
 
-    public UserMO(String mobile, String email) {
+    public User(String mobile, String email) {
         this.mobile = mobile;
         this.email = email;
     }
 
-    public UserMO() {
+    public User() {
     }
 }

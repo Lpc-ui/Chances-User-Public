@@ -4,7 +4,7 @@ import com.chances.chancesuser.cuenum.UserStatusCode;
 import com.chances.chancesuser.dao.UserDao;
 import com.chances.chancesuser.exception.LockException;
 import com.chances.chancesuser.exception.PwdNotMatchException;
-import com.chances.chancesuser.model.UserMO;
+import com.chances.chancesuser.model.User;
 import com.chances.chancesuser.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -198,29 +198,29 @@ class ChancesUserApplicationTests {
                 .andDo(MockMvcResultHandlers.print())
                 .andReturn();
 
-        UserMO userMO = userService.findByName("lpcNew");
+        User user = userService.findByName("lpcNew");
         // 断言不为null
-        assertNotNull(userMO);
+        assertNotNull(user);
     }
 
     @Test
     public void 用户管理_用户列表_删除() throws Exception {
-        UserMO lpcNew = userService.findByName("lpcNew");
+        User lpcNew = userService.findByName("lpcNew");
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.delete("/user/" + lpcNew.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("token", TOKEN))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andDo(MockMvcResultHandlers.print())
                 .andReturn();
-        UserMO userMO = userService.findByName("lpcNew");
+        User user = userService.findByName("lpcNew");
         // 断言为null--已删除
-        assertNull(userMO);
+        assertNull(user);
     }
 
     @Test
     public void 用户管理_用户列表_锁定解锁() throws Exception {
         //锁定否不能访问接口
-        UserMO adminlpc = userService.findByName("adminlpc");
+        User adminlpc = userService.findByName("adminlpc");
         Long userId = adminlpc.getId();
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/user/update/status")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -231,9 +231,9 @@ class ChancesUserApplicationTests {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andDo(MockMvcResultHandlers.print())
                 .andReturn();
-        UserMO userMO = userService.findByName("adminlpc");
+        User user = userService.findByName("adminlpc");
         // 断言禁用
-        assertEquals(UserStatusCode.DISABLE.code(), userMO.getStatus());
+        assertEquals(UserStatusCode.DISABLE.code(), user.getStatus());
         //解锁
         userService.lock(String.valueOf(userId), String.valueOf(UserStatusCode.OK.code()));
     }
@@ -267,9 +267,9 @@ class ChancesUserApplicationTests {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andDo(MockMvcResultHandlers.print())
                 .andReturn();
-        UserMO userMO = userService.findByName("adminlpc");
+        User user = userService.findByName("adminlpc");
         // 断言禁用
-        assertEquals("199999999", userMO.getMobile());
+        assertEquals("199999999", user.getMobile());
     }
 
     @Test

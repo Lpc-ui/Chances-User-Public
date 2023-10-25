@@ -4,7 +4,7 @@ import com.chances.chancesuser.base.BaseService;
 import com.chances.chancesuser.base.PageJson;
 import com.chances.chancesuser.base.Result;
 import com.chances.chancesuser.dto.UserDTO;
-import com.chances.chancesuser.model.UserMO;
+import com.chances.chancesuser.model.User;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Map;
@@ -41,7 +41,7 @@ public interface UserService extends BaseService {
      * @param userName userName
      * @return UserMO
      */
-    UserMO findByName(String userName);
+    User findByName(String userName);
 
     /**
      * 用户列表
