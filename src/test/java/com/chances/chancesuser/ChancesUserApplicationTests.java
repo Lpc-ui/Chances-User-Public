@@ -26,7 +26,7 @@ class ChancesUserApplicationTests {
     private UserService userService;
 
     //登录页_登录_登录成功 测试生成
-    public static final String TOKEN = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbmxwYyIsImlhdCI6MTY5ODIxNjQ2MywiZXhwIjoxNjk4MjIwMDYzfQ.a40QPJGPseVwA9uxsZ6Rthp5e2YuQHz-y1dFw3q-iC94SpX5o9C1IX8XItlaw_Lam4hZK6MKGZL1vnmXl3Om7Q";
+    public static final String TOKEN = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbmxwYyIsImlhdCI6MTY5ODIxNzI2MCwiZXhwIjoxNjk4MjIwODYwfQ.xXFkLYU_dqv9qBgddS6FiEX8-cLKCrI2tFh269QT_mMMttXV9n1HGKjo-wtqccjGijBhzo_KcFFAcOki7WnDUg";
 
     @Resource
     private MockMvc mockMvc;
@@ -238,6 +238,22 @@ class ChancesUserApplicationTests {
                 .andDo(MockMvcResultHandlers.print())
                 .andReturn();
         // 从MvcResult中获取响应内容
+        String responseBody = result.getResponse().getContentAsString();
+        System.out.println("Response Body: " + responseBody);
+    }
+
+    @Test
+    public void 头像_修改密码_修改成功() throws Exception {
+        //注意:::修改密码后需要重新登录生成新的TOKEN
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/user/update/password")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("token", TOKEN)
+                        .param("oldPassword", "qwerty")
+                        //新的密码
+                        .param("newPassword", "qwertyu"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcResultHandlers.print())
+                .andReturn();
         String responseBody = result.getResponse().getContentAsString();
         System.out.println("Response Body: " + responseBody);
     }
