@@ -202,4 +202,10 @@ class ChancesUserApplicationTests {
         String responseBody = result.getResponse().getContentAsString();
         System.out.println("Response Body: " + responseBody);
     }
+
+    @Test
+    public void 解锁_非接口() {
+        String userId = "24";
+        userService.lock(userId, String.valueOf(UserStatusCode.OK.code()));
+    }
 }
