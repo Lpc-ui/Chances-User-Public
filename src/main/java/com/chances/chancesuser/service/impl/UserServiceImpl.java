@@ -2,7 +2,7 @@ package com.chances.chancesuser.service.impl;
 
 import com.chances.chancesuser.base.ErrorCode;
 import com.chances.chancesuser.base.PageJson;
-import com.chances.chancesuser.base.R;
+import com.chances.chancesuser.base.Result;
 import com.chances.chancesuser.cuenum.UserAdminCode;
 import com.chances.chancesuser.cuenum.UserStatusCode;
 import com.chances.chancesuser.dao.UserDao;
@@ -174,7 +174,7 @@ public class UserServiceImpl implements UserService {
     private final List<String> images = Arrays.asList(".png", ".jpg", ",jpg");
 
     @Override
-    public R setImage(MultipartFile file, String token) {
+    public Result setImage(MultipartFile file, String token) {
         try {
             // 构建文件路径
             String username = jwtUtils.getUsernameFromToken(token);
@@ -188,10 +188,10 @@ public class UserServiceImpl implements UserService {
             // 将文件保存到指定路径
             file.transferTo(filePath.toFile());
             userDao.updateAvataByLoginName(username, filePath.toFile().getPath());
-            return R.ok().setMsg("上传成功");
+            return Result.ok().setMsg("上传成功");
         } catch (IOException e) {
             e.printStackTrace();
-            return R.failed(ErrorCode.CU_EX).setMsg("上传失败");
+            return Result.failed(ErrorCode.CU_EX).setMsg("上传失败");
         }
     }
 }

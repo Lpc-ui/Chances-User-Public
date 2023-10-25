@@ -40,7 +40,7 @@ class ChancesUserApplicationTests {
     private UserDao userDao;
 
     //登录页_登录_登录成功 测试生成
-    public static final String TOKEN = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbmxwYyIsImlhdCI6MTY5ODIyNDE3MCwiZXhwIjoxNjk4MjI3NzcwfQ.PmbFn0R3INdYaFy7Up3Ru32UalvSvSwa34byIa8HjR7yFizsRRRl5AeZSAPLvEOIjj8HrGz8UhVEboNKr_wOEA";
+    public static final String TOKEN = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbmxwYyIsImlhdCI6MTY5ODIyNzg4NiwiZXhwIjoxNjk4MjMxNDg2fQ.LGh6vJe9wB8xA5N1Yen82qjzxCldq4gvsiiBMPTLoD5wIiyEfm1T5BIaTRU1eXT_a4M4Es8HaGoku_pW5ybbfQ";
 
     @Resource
     private MockMvc mockMvc;
@@ -205,38 +205,39 @@ class ChancesUserApplicationTests {
 
     @Test
     public void 用户管理_用户列表_删除() throws Exception {
-        String userId = "27";
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.delete("/user/" + userId)
+        UserMO lpcNew = userService.findByName("lpcNew");
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.delete("/user/" + lpcNew.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("token", TOKEN))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andDo(MockMvcResultHandlers.print())
                 .andReturn();
-        // 从MvcResult中获取响应内容
-        String responseBody = result.getResponse().getContentAsString();
-        System.out.println("Response Body: " + responseBody);
+        UserMO userMO = userService.findByName("lpcNew");
+        // 断言为null--已删除
+        assertNull(userMO);
     }
 
     @Test
     public void 用户管理_用户列表_锁定解锁() throws Exception {
         //锁定否不能访问接口
-        String userId = "24";
+        UserMO adminlpc = userService.findByName("adminlpc");
+        Long userId = adminlpc.getId();
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/user/update/status")
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("token", TOKEN)
                         .param("status", String.valueOf(UserStatusCode.DISABLE.code()))
-                        .param("userId", userId)
+                        .param("userId", String.valueOf(userId))
                 )
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andDo(MockMvcResultHandlers.print())
                 .andReturn();
+        UserMO userMO = userService.findByName("adminlpc");
+        // 断言禁用
+        assertEquals(UserStatusCode.DISABLE.code(), userMO.getStatus());
+        //解锁
+        userService.lock(String.valueOf(userId), String.valueOf(UserStatusCode.OK.code()));
     }
 
-    @Test
-    public void 解锁_非接口() {
-        String userId = "24";
-        userService.lock(userId, String.valueOf(UserStatusCode.OK.code()));
-    }
 
     @Test
     public void 头像_用户信息() throws Exception {
@@ -248,6 +249,9 @@ class ChancesUserApplicationTests {
                 )
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andDo(MockMvcResultHandlers.print())
+                .andExpect(jsonPath("$.code", is(200)))
+                .andExpect(jsonPath("$.msg", is("用户信息")))
+                .andExpect(jsonPath("$.data.loginName", is("adminlpc")))
                 .andReturn();
     }
 
@@ -263,6 +267,9 @@ class ChancesUserApplicationTests {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andDo(MockMvcResultHandlers.print())
                 .andReturn();
+        UserMO userMO = userService.findByName("adminlpc");
+        // 断言禁用
+        assertEquals("199999999", userMO.getMobile());
     }
 
     @Test

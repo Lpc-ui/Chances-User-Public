@@ -1,6 +1,6 @@
 package com.chances.chancesuser.controller;
 
-import com.chances.chancesuser.base.R;
+import com.chances.chancesuser.base.Result;
 import com.chances.chancesuser.dto.UserDTO;
 import com.chances.chancesuser.service.UserService;
 import org.springframework.web.bind.annotation.*;
@@ -17,9 +17,9 @@ public class UserController {
      * test
      */
     @RequestMapping(value = "/info", method = {RequestMethod.POST})
-    private R test() {
+    private Result test() {
         userService.test();
-        return R.ok("123");
+        return Result.ok("123");
     }
 
     /**
@@ -30,8 +30,8 @@ public class UserController {
      * @return token
      */
     @RequestMapping(value = "/user/login", method = {RequestMethod.POST})
-    private R userLogin(String loginName, String password) {
-        return R.ok().put("token", userService.userLogin(loginName, password)).setMsg("登录成功");
+    private Result userLogin(String loginName, String password) {
+        return Result.ok().put("token", userService.userLogin(loginName, password)).setMsg("登录成功");
     }
 
 
@@ -42,9 +42,9 @@ public class UserController {
      * @return R
      */
     @RequestMapping(value = "/user/add", method = {RequestMethod.POST})
-    private R userAdd(@RequestBody UserDTO userDTO) {
+    private Result userAdd(@RequestBody UserDTO userDTO) {
         userService.add(userDTO);
-        return R.ok().setMsg("创建成功");
+        return Result.ok().setMsg("创建成功");
     }
 
 
@@ -55,9 +55,9 @@ public class UserController {
      * @return ok
      */
     @RequestMapping(value = "/user/logout", method = {RequestMethod.GET})
-    private R logout(@RequestHeader String token) throws Exception {
+    private Result logout(@RequestHeader String token) throws Exception {
         userService.logout(token);
-        return R.ok().setMsg("退出成功");
+        return Result.ok().setMsg("退出成功");
     }
 
     /**
@@ -69,11 +69,11 @@ public class UserController {
      * @param pageNum  pageNum
      */
     @RequestMapping(value = "/user/list", method = {RequestMethod.GET})
-    private R userList(@RequestParam(required = false) String email,
-                       @RequestParam(required = false) String mobile,
-                       @RequestParam(required = false, defaultValue = "10") String pageSize,
-                       @RequestParam(required = false, defaultValue = "1") String pageNum) throws Exception {
-        return R.ok(userService.userList(email, mobile, pageNum, pageSize)).setMsg("条件分页");
+    private Result userList(@RequestParam(required = false) String email,
+                            @RequestParam(required = false) String mobile,
+                            @RequestParam(required = false, defaultValue = "10") String pageSize,
+                            @RequestParam(required = false, defaultValue = "1") String pageNum) throws Exception {
+        return Result.ok(userService.userList(email, mobile, pageNum, pageSize)).setMsg("条件分页");
     }
 
     /**
@@ -82,9 +82,9 @@ public class UserController {
      * @param userId 用户id
      */
     @DeleteMapping(value = "/user/{userId}")
-    private R userDelete(@PathVariable String userId) {
+    private Result userDelete(@PathVariable String userId) {
         userService.userDelete(userId);
-        return R.ok().setMsg("移除成功");
+        return Result.ok().setMsg("移除成功");
     }
 
 
@@ -94,8 +94,8 @@ public class UserController {
      * @param userId 用户id
      */
     @GetMapping(value = "/user/{userId}")
-    private R userInfo(@PathVariable String userId, @RequestHeader String token) {
-        return R.ok(userService.userInfo(userId, token)).setMsg("用户信息");
+    private Result userInfo(@PathVariable String userId, @RequestHeader String token) {
+        return Result.ok(userService.userInfo(userId, token)).setMsg("用户信息");
     }
 
     /**
@@ -104,9 +104,9 @@ public class UserController {
      * @param userId 用户id
      */
     @PutMapping(value = "/user/{userId}")
-    private R userUpdate(@PathVariable String userId, @RequestBody UserDTO userDTO, @RequestHeader String token) {
+    private Result userUpdate(@PathVariable String userId, @RequestBody UserDTO userDTO, @RequestHeader String token) {
         userService.userUpdate(userId, userDTO, token);
-        return R.ok().setMsg("修改成功");
+        return Result.ok().setMsg("修改成功");
     }
 
 
@@ -117,9 +117,9 @@ public class UserController {
      * @param status 用户状态
      */
     @PostMapping(value = "user/update/status")
-    private R lock(String status, String userId) {
+    private Result lock(String status, String userId) {
         userService.lock(userId, status);
-        return R.ok().setMsg("更新成功");
+        return Result.ok().setMsg("更新成功");
     }
 
 
@@ -130,9 +130,9 @@ public class UserController {
      * @param newPassword 新密码
      */
     @PostMapping(value = "user/update/password")
-    private R password(String oldPassword, String newPassword, @RequestHeader String token) throws Exception {
+    private Result password(String oldPassword, String newPassword, @RequestHeader String token) throws Exception {
         userService.password(oldPassword, newPassword, token);
-        return R.ok().setMsg("更新成功");
+        return Result.ok().setMsg("更新成功");
     }
 
     /**
@@ -143,7 +143,7 @@ public class UserController {
      */
     @PostMapping("/user/avatar/upload")
     @ResponseBody
-    public R uploadFile(@RequestParam("file") MultipartFile file, @RequestHeader String token) {
+    public Result uploadFile(@RequestParam("file") MultipartFile file, @RequestHeader String token) {
         return userService.setImage(file, token);
     }
 }

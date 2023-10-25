@@ -11,7 +11,7 @@ import java.util.Map;
  * 通用返回类
  */
 @SuppressWarnings("all")
-public class R<T> implements Serializable {
+public class Result<T> implements Serializable {
     /**
      * 返回码:0-成功 大于0失败
      */
@@ -28,19 +28,19 @@ public class R<T> implements Serializable {
     /**
      * 成功:Str返回,有返回code 200
      */
-    public static R ok(Object data) {
-        R<Object> objectR = new R<>(data);
-        objectR.setCode(200);
-        return objectR;
+    public static Result ok(Object data) {
+        Result<Object> objectResult = new Result<>(data);
+        objectResult.setCode(200);
+        return objectResult;
     }
 
-    public static R<Map<String, Object>> ok() {
-        R<Map<String, Object>> objectR = new R<>(new HashMap<>());
-        objectR.setCode(200);
-        return objectR;
+    public static Result<Map<String, Object>> ok() {
+        Result<Map<String, Object>> objectResult = new Result<>(new HashMap<>());
+        objectResult.setCode(200);
+        return objectResult;
     }
 
-    public R put(String key, Object value) {
+    public Result put(String key, Object value) {
         ((HashMap<String, Object>) this.data).put(key, value);
         return this;
     }
@@ -48,8 +48,8 @@ public class R<T> implements Serializable {
     /**
      * 失败
      */
-    public static R failed(ErrorCode errorCode) {
-        R info = new R();
+    public static Result failed(ErrorCode errorCode) {
+        Result info = new Result();
         info.setCode(errorCode.getCode());
         info.setMsg(errorCode.getMessage());
         return info;
@@ -58,8 +58,8 @@ public class R<T> implements Serializable {
     /**
      * 失败-自定义错误信息
      */
-    public static R failed(ErrorCode errorCode, String msg) {
-        R info = new R();
+    public static Result failed(ErrorCode errorCode, String msg) {
+        Result info = new Result();
         info.setCode(errorCode.getCode());
         if (StringUtils.isEmpty(msg)) {
             info.setMsg(errorCode.getMessage());
@@ -69,24 +69,24 @@ public class R<T> implements Serializable {
         return info;
     }
 
-    public static R failed(BaseException exception) {
-        R info = new R();
+    public static Result failed(BaseException exception) {
+        Result info = new Result();
         info.setCode(exception.getCODE());
         info.setMsg(exception.getMessage());
         return info;
     }
 
-    public static R failed(String msg) {
-        R info = new R();
+    public static Result failed(String msg) {
+        Result info = new Result();
         info.setCode(CuException.CODE);
         info.setMsg(msg);
         return info;
     }
 
-    public R() {
+    public Result() {
     }
 
-    private R(T data) {
+    private Result(T data) {
         this.data = data;
         this.msg = "success";
     }
@@ -119,7 +119,7 @@ public class R<T> implements Serializable {
         return this.msg;
     }
 
-    public R<T> setMsg(String msg) {
+    public Result<T> setMsg(String msg) {
         this.msg = msg;
         return this;
     }

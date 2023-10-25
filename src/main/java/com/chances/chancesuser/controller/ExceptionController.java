@@ -1,6 +1,6 @@
 package com.chances.chancesuser.controller;
 
-import com.chances.chancesuser.base.R;
+import com.chances.chancesuser.base.Result;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -14,22 +14,22 @@ import javax.servlet.http.HttpServletRequest;
 @RestController
 public class ExceptionController {
     @PostMapping("/error")
-    public R post(HttpServletRequest request) throws Exception {
+    public Result post(HttpServletRequest request) throws Exception {
         throw (Exception) request.getAttribute("exception");
     }
 
     @GetMapping("/error")
-    public R get(HttpServletRequest request) throws Exception {
+    public Result get(HttpServletRequest request) throws Exception {
         throw (Exception) request.getAttribute("exception");
     }
 
     @PutMapping("/error")
-    public R put(HttpServletRequest request) throws Exception {
+    public Result put(HttpServletRequest request) throws Exception {
         throw (Exception) request.getAttribute("exception");
     }
 
     @DeleteMapping("/error")
-    public R deleted(HttpServletRequest request) throws Exception {
+    public Result deleted(HttpServletRequest request) throws Exception {
         throw (Exception) request.getAttribute("exception");
     }
 }
