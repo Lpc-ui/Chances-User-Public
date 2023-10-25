@@ -2,8 +2,12 @@ package com.chances.chancesuser.service;
 
 import com.chances.chancesuser.base.BaseService;
 import com.chances.chancesuser.base.PageJson;
+import com.chances.chancesuser.base.R;
 import com.chances.chancesuser.dto.UserDTO;
 import com.chances.chancesuser.model.UserMO;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.Map;
 
 public interface UserService extends BaseService {
 
@@ -88,8 +92,9 @@ public interface UserService extends BaseService {
      */
     void password(String oldPassword, String newPassword, String token) throws Exception;
 
+
     /**
      * 设置用户头像路径
      */
-    void setImage(String username,String avata);
+    R<Map<String, Object>> setImage(MultipartFile file, String token);
 }
