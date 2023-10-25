@@ -73,6 +73,7 @@ class ChancesUserApplicationTests {
                 .andExpect(MockMvcResultMatchers.status().isOk());
     }
 
+    // TODO: 未登录调用返回不了结果  直接调用可以返回
     @Test
     public void 用户管理_用户列表() throws Exception {
         String path = "/user/list";
