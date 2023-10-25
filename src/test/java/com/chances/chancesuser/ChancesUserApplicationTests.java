@@ -124,4 +124,17 @@ class ChancesUserApplicationTests {
                 .andDo(MockMvcResultHandlers.print()) // 打印响应内容
                 .andExpect(MockMvcResultMatchers.status().isOk());
     }
+
+    @Test
+    public void 用户管理_用户列表_查看() throws Exception {
+        //查看用户ID为24的用户
+        String path = "/user/24";
+        mockMvc.perform(MockMvcRequestBuilders.get(path)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"name\": \"example\"}")
+                        .header("token", TOKEN)
+                )
+                .andDo(MockMvcResultHandlers.print()) // 打印响应内容
+                .andExpect(MockMvcResultMatchers.status().isOk());
+    }
 }
