@@ -87,7 +87,8 @@ public class UserController {
      * @param userId 用户id
      */
     @GetMapping(value = "/user/{userId}")
-    private Result userInfo(@PathVariable String userId, @RequestHeader String token) {
+    private Result userInfo(@PathVariable String userId,
+                            @RequestHeader String token) {
         return Result.ok(userService.userInfo(userId, token)).setMsg("用户信息");
     }
 
@@ -97,7 +98,9 @@ public class UserController {
      * @param userId 用户id
      */
     @PutMapping(value = "/user/{userId}")
-    private Result userUpdate(@PathVariable String userId, @RequestBody UserDTO userDTO, @RequestHeader String token) {
+    private Result userUpdate(@PathVariable String userId,
+                              @RequestBody UserDTO userDTO,
+                              @RequestHeader String token) {
         userService.userUpdate(userId, userDTO, token);
         return Result.ok().setMsg("修改成功");
     }
