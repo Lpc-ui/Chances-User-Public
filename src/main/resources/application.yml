@@ -1,0 +1,27 @@
+server:
+  port: 2222
+
+spring:
+  # mysql数据源配置  数据库名：chances-user   -----mac本地
+  datasource:
+    url: jdbc:mysql://localhost:3306/chances-user?useUnicode=true&useSSL=false&characterEncoding=utf8&serverTimezone=GMT%2B8
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: adminlpc
+  # redis数据源配置 --mac本地 --安装位置：Users/lipengcheng/Applications/redis-7.0.5  启动命令：redis-server
+  redis:
+    host: localhost
+    port: 6379
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+chances:
+  default-password: qwerty
+  jwt:
+    secret: dAzHrwhYjg1zJrwITjI+G/QnOG0FAHXIDR+kmdXqHvQRVw/03MVwBun0VM/2vWznjNLws/oL3GRQfXIhpnrDjQ==
+    #秒
+    expiration: 3600
+  upload:
+    # 测试用  生产不能这样写
+    dir: /Users/lipengcheng/Chances-User/src/images
