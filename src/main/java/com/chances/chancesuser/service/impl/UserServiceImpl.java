@@ -149,4 +149,9 @@ public class UserServiceImpl implements UserService {
         jwtUtils.invalidateToken(username);
     }
 
+    @Override
+    public void setImage(String username, String avata) {
+        userDao.updateAvataByLoginName(username, avata);
+    }
+
 }

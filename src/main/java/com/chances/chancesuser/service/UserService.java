@@ -5,9 +5,6 @@ import com.chances.chancesuser.base.PageJson;
 import com.chances.chancesuser.dto.UserDTO;
 import com.chances.chancesuser.model.UserMO;
 
-import javax.servlet.ServletException;
-import java.io.IOException;
-
 public interface UserService extends BaseService {
 
     void test();
@@ -90,4 +87,9 @@ public interface UserService extends BaseService {
      * @param token       当前用户
      */
     void password(String oldPassword, String newPassword, String token) throws Exception;
+
+    /**
+     * 设置用户头像路径
+     */
+    void setImage(String username,String avata);
 }

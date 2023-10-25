@@ -28,6 +28,15 @@ public interface UserDao extends BaseDao<UserMO> {
     @Query("UPDATE UserMO u SET u.password = :password WHERE u.id = :id")
     void updatePasswordById(@Param("id") Long id, @Param("password") String password);
 
+
+    /**
+     * 更新用户头像路径
+     */
+    @Modifying
+    @Transactional
+    @Query("UPDATE UserMO u SET u.avata = :avata WHERE u.loginName = :loginName")
+    void updateAvataByLoginName(@Param("loginName") String loginName, @Param("avata") String avata);
+
     /**
      * 更新登录时间
      *
