@@ -8,6 +8,7 @@ import com.chances.chancesuser.cuenum.UserStatusCode;
 import com.chances.chancesuser.dao.UserDao;
 import com.chances.chancesuser.dto.UserDTO;
 import com.chances.chancesuser.exception.CuException;
+import com.chances.chancesuser.exception.PwdNotMatchException;
 import com.chances.chancesuser.model.UserMO;
 import com.chances.chancesuser.service.UserService;
 import com.chances.chancesuser.utils.BeanCopyUtil;
@@ -70,8 +71,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public String userLogin(String loginName, String password) {
         UserMO userMO = userDao.findByLoginName(loginName);
-        if (ObjectUtils.isEmpty(userMO)) throw new CuException("用户名或密码错误");
-        if (!PasswordUtils.matchPassword(password, userMO.getPassword())) throw new CuException("用户名或密码错误");
+        if (ObjectUtils.isEmpty(userMO)) throw new PwdNotMatchException();
+        if (!PasswordUtils.matchPassword(password, userMO.getPassword())) throw new PwdNotMatchException();
         if (userMO.getStatus().equals(UserStatusCode.LOCK.code()))
             throw new CuException(UserStatusCode.LOCK.describe());
         if (userMO.getStatus().equals(UserStatusCode.DISABLE.code()))

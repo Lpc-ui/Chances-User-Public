@@ -31,7 +31,7 @@ public class UserController {
      */
     @RequestMapping(value = "/user/login", method = {RequestMethod.POST})
     private R userLogin(String loginName, String password) {
-        return R.ok().put("token", userService.userLogin(loginName, password));
+        return R.ok().put("token", userService.userLogin(loginName, password)).setMsg("登录成功");
     }
 
 

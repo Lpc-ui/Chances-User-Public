@@ -5,6 +5,7 @@ import com.chances.chancesuser.base.R;
 import com.chances.chancesuser.exception.CuException;
 import com.chances.chancesuser.exception.LockException;
 import com.chances.chancesuser.exception.NotLoginException;
+import com.chances.chancesuser.exception.PwdNotMatchException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -43,4 +44,12 @@ public class GlobalExceptionConfig {
         e.printStackTrace();
         return R.failed(ErrorCode.SYS_NO_PERMISSION, ErrorCode.SYS_NO_PERMISSION.getMessage());
     }
+
+    // 拦截：锁定异常
+    @ExceptionHandler(PwdNotMatchException.class)
+    public R handlerException(PwdNotMatchException e) {
+        e.printStackTrace();
+        return R.failed(ErrorCode.USER_PWD_ERR, ErrorCode.USER_PWD_ERR.getMessage());
+    }
+
 }

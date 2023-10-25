@@ -11,6 +11,7 @@ public enum ErrorCode {
     SYS_LOGIN_NO(101, "用户未登录"),
 
     SYS_NO_PERMISSION(100, "用户禁用"),
+    USER_PWD_ERR(120, "用户名或密码错误"),
 
     CU_EX(500, "业务异常");
 
