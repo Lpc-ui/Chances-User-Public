@@ -36,4 +36,15 @@ class ChancesUserApplicationTests {
                 .andExpect(MockMvcResultMatchers.status().isOk());
     }
 
+    @Test
+    public void 登录页_登录_用户名密码错误() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.post("/user/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"name\": \"example\"}")
+                        .param("loginName", "adminlpc")
+                        .param("password", "qwerty1111"))
+                .andDo(MockMvcResultHandlers.print()) // 打印响应内容
+                .andExpect(MockMvcResultMatchers.status().isOk());
+    }
+
 }
