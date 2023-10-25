@@ -169,4 +169,18 @@ class ChancesUserApplicationTests {
         String responseBody = result.getResponse().getContentAsString();
         System.out.println("Response Body: " + responseBody);
     }
+
+    @Test
+    public void 用户管理_用户列表_删除() throws Exception {
+        String userId = "27";
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.delete("/user/" + userId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("token", TOKEN))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcResultHandlers.print())
+                .andReturn();
+        // 从MvcResult中获取响应内容
+        String responseBody = result.getResponse().getContentAsString();
+        System.out.println("Response Body: " + responseBody);
+    }
 }
