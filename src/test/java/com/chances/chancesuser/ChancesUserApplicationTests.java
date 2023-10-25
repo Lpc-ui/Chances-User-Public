@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -13,6 +14,8 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import javax.annotation.Resource;
+import java.io.File;
+import java.io.FileInputStream;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -271,5 +274,32 @@ class ChancesUserApplicationTests {
                 .andReturn();
         String responseBody = result.getResponse().getContentAsString();
         System.out.println("Response Body: " + responseBody);
+    }
+
+
+    @Test
+    public void 头像_上传头像_上传成功() throws Exception {
+        File file1 = new File("/Users/lipengcheng/Chances-User/src/images/adminlpc-test.png");
+        try (FileInputStream fileInputStream = new FileInputStream(file1)) {
+
+            // 创建一个模拟的MultipartFile
+            MockMultipartFile file = new MockMultipartFile(
+                    "file", // 请求参数名，应与Controller中@RequestParam("file")的名称匹配
+                    "adminlpc-test.png", // 文件名
+                    MediaType.IMAGE_PNG.toString(), // 文件类型
+                    fileInputStream // 文件内容
+            );
+
+            // 发送POST请求，模拟文件上传
+            MvcResult result = mockMvc.perform(MockMvcRequestBuilders.multipart("/user/avatar/upload").file(file)
+                            .header("token", TOKEN))
+                    .andExpect(MockMvcResultMatchers.status().isOk())
+                    .andDo(MockMvcResultHandlers.print())
+                    .andReturn();
+
+            // 从MvcResult中获取响应内容
+            String responseBody = result.getResponse().getContentAsString();
+            System.out.println("Response Body: " + responseBody);
+        }
     }
 }

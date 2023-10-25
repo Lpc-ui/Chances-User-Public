@@ -1,5 +1,6 @@
 package com.chances.chancesuser.base;
 
+import com.chances.chancesuser.exception.CuException;
 import org.springframework.util.StringUtils;
 
 import java.io.Serializable;
@@ -72,6 +73,13 @@ public class R<T> implements Serializable {
         R info = new R();
         info.setCode(exception.getCODE());
         info.setMsg(exception.getMessage());
+        return info;
+    }
+
+    public static R failed(String msg) {
+        R info = new R();
+        info.setCode(CuException.CODE);
+        info.setMsg(msg);
         return info;
     }
 

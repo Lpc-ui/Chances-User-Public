@@ -8,6 +8,7 @@ import com.chances.chancesuser.exception.NotLoginException;
 import com.chances.chancesuser.exception.PwdNotMatchException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 
 /**
@@ -21,7 +22,7 @@ public class GlobalExceptionConfig {
         // 打印堆栈，以供调试
         e.printStackTrace();
         // 返回给前端
-        return R.failed(new CuException());
+        return R.failed(new CuException(e.getMessage()));
     }
 
     // 拦截：其它所有异常
@@ -51,5 +52,14 @@ public class GlobalExceptionConfig {
         e.printStackTrace();
         return R.failed(new PwdNotMatchException());
     }
+
+    // 拦截：文件过大
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    public R handlerException(MaxUploadSizeExceededException e) {
+        e.printStackTrace();
+        return R.failed("文件过大");
+    }
+
+
 
 }

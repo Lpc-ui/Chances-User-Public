@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -169,14 +170,20 @@ public class UserServiceImpl implements UserService {
     @Value("${chances.upload.dir}")
     private String uploadDir;
 
+
+    private final List<String> images = Arrays.asList(".png", ".jpg", ",jpg");
+
     @Override
     public R setImage(MultipartFile file, String token) {
         try {
             // 构建文件路径
             String username = jwtUtils.getUsernameFromToken(token);
             String originalFilename = file.getOriginalFilename();
+            long size = file.getSize();
+            if (size > 2000000) throw new CuException("文件过大");
             assert originalFilename != null;
             String fix = originalFilename.substring(originalFilename.lastIndexOf("."));
+            if (!images.contains(fix)) throw new CuException("文件类型有误");
             Path filePath = Paths.get(uploadDir, username + fix);
             // 将文件保存到指定路径
             file.transferTo(filePath.toFile());
