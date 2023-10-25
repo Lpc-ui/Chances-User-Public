@@ -127,7 +127,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDTO userInfo(String userId, String token) {
-        User user = userId.equals("0") ? userDao.findByLoginName(jwtUtils.getUsernameFromToken(token)) : userDao.findById(Long.valueOf(userId)).orElse(null);
+        User user = this.getUser(userId, token);
         UserDTO userDTO = BeanCopyUtil.copyBeanProperties(user, UserDTO::new);
         userDTO.setAvata(null);
         userDTO.setStatus(null);
@@ -138,7 +138,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void userUpdate(String userId, UserDTO userDTO, String token) {
-        User user = userId.equals("0") ? userDao.findByLoginName(jwtUtils.getUsernameFromToken(token)) : userDao.findById(Long.valueOf(userId)).orElse(null);
+        User user = this.getUser(userId, token);
         if (user == null) throw new CuException("参数有误");
         if (ObjectUtils.isNotEmpty(userDTO.getStatus())) user.setStatus(userDTO.getStatus());
         if (ObjectUtils.isNotEmpty(userDTO.getAdmin())) user.setAdmin(userDTO.getAdmin());
@@ -148,6 +148,12 @@ public class UserServiceImpl implements UserService {
         if (ObjectUtils.isNotEmpty(userDTO.getMobile()) && userDao.existsByMobile(userDTO.getMobile()))
             throw new CuException("手机号重复");
         userDao.save(user);
+    }
+
+    private User getUser(String userId, String token) {
+        return userId.equals("0")
+                ? userDao.findByLoginName(jwtUtils.getUsernameFromToken(token))
+                : userDao.findById(Long.valueOf(userId)).orElse(null);
     }
 
     @Override
