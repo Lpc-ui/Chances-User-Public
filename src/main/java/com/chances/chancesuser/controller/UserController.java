@@ -21,8 +21,10 @@ public class UserController {
      * @return token
      */
     @RequestMapping(value = "/user/login", method = {RequestMethod.POST})
-    private Result userLogin(String loginName, String password) {
-        return Result.ok().put("token", userService.userLogin(loginName, password)).setMsg("登录成功");
+    private Result userLogin(@RequestParam("loginName") String loginName,
+                             @RequestParam("password") String password) {
+        String token = userService.userLogin(loginName, password);
+        return Result.ok().put("token", token).setMsg("登录成功");
     }
 
 
@@ -108,7 +110,8 @@ public class UserController {
      * @param status 用户状态
      */
     @PostMapping(value = "user/update/status")
-    private Result lock(String status, String userId) {
+    private Result lock(@RequestParam("status") String status,
+                        @RequestParam("userId") String userId) {
         userService.lock(userId, status);
         return Result.ok().setMsg("更新成功");
     }
@@ -121,7 +124,9 @@ public class UserController {
      * @param newPassword 新密码
      */
     @PostMapping(value = "user/update/password")
-    private Result password(String oldPassword, String newPassword, @RequestHeader String token) throws Exception {
+    private Result password(@RequestParam("oldPassword") String oldPassword,
+                            @RequestParam("newPassword") String newPassword,
+                            @RequestHeader String token) throws Exception {
         userService.password(oldPassword, newPassword, token);
         return Result.ok().setMsg("更新成功");
     }
@@ -134,7 +139,8 @@ public class UserController {
      */
     @PostMapping("/user/avatar/upload")
     @ResponseBody
-    public Result uploadFile(@RequestParam("file") MultipartFile file, @RequestHeader String token) {
+    public Result uploadFile(@RequestParam("file") MultipartFile file,
+                             @RequestHeader String token) {
         return userService.setImage(file, token);
     }
 }
