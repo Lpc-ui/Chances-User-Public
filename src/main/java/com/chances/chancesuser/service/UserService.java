@@ -11,7 +11,6 @@ import java.util.Map;
 
 public interface UserService extends BaseService {
 
-    void test();
 
     /**
      * 增加用户

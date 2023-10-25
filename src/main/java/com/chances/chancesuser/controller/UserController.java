@@ -14,15 +14,6 @@ public class UserController {
     private UserService userService;
 
     /**
-     * test
-     */
-    @RequestMapping(value = "/info", method = {RequestMethod.POST})
-    private Result test() {
-        userService.test();
-        return Result.ok("123");
-    }
-
-    /**
      * 用户登录
      *
      * @param loginName 用户名

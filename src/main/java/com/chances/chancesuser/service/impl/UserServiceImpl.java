@@ -45,20 +45,6 @@ public class UserServiceImpl implements UserService {
     private String defaultPassword;
 
     @Override
-    public void test() {
-        User entity = new User();
-        entity.setLoginName("李鹏成");
-        entity.setPassword("12345");
-        entity.setMobile("18286703704");
-        entity.setEmail("lpcxyxy@gmail.com");
-        entity.setAvata("qqq");
-        entity.setAdmin(0);
-        entity.setStatus(0);
-        entity.setLastLoginTime(LocalDateTime.now());
-        userDao.insert(entity);
-    }
-
-    @Override
     public void add(UserDTO userDTO) {
         if (StringUtils.isEmpty(userDTO.getLoginName())) throw new CuException("用户名不能为空");
         if (StringUtils.isEmpty(userDTO.getMobile())) throw new CuException("手机号不能为空");
@@ -129,7 +115,6 @@ public class UserServiceImpl implements UserService {
     public UserDTO userInfo(String userId, String token) {
         User user = this.getUser(userId, token);
         UserDTO userDTO = BeanCopyUtil.copyBeanProperties(user, UserDTO::new);
-        userDTO.setAvata(null);
         userDTO.setStatus(null);
         userDTO.setPassword(null);
         userDTO.setLastLoginTime(null);
