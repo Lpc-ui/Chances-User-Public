@@ -142,7 +142,6 @@ public class UserController {
      * @param token 用户
      */
     @PostMapping("/avatar/upload")
-    @ResponseBody
     public Result uploadFile(@RequestParam("file") MultipartFile file,
                              @RequestHeader String token) {
         return userService.setImage(file, token);
