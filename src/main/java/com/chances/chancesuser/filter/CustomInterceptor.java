@@ -48,8 +48,6 @@ public class CustomInterceptor implements HandlerInterceptor {
         if (!jwtUtils.isTokenValid(token, userName)) {
             throw new NotLoginException();
         }
-        log.info(userName + ":" + "登录");
-        log.info(token + ":" + "token");
         User user = userService.findByName(userName);
         Integer status = user.getStatus();
         if (status.equals(UserStatusCode.LOCK.code())) {
