@@ -7,8 +7,6 @@ import com.chances.chancesuser.dto.UserDTO;
 import com.chances.chancesuser.model.User;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Map;
-
 public interface UserService extends BaseService {
 
 
@@ -97,5 +95,5 @@ public interface UserService extends BaseService {
     /**
      * 设置用户头像路径
      */
-    Result<Map<String, Object>> setImage(MultipartFile file, String token);
+    Result setImage(MultipartFile file, String token);
 }

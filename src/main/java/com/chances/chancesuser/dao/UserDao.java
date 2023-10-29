@@ -19,6 +19,7 @@ public interface UserDao extends BaseDao<User> {
 
     boolean existsByMobile(String mobile);
 
+    boolean existsByLoginName(String loginName);
 
     /**
      * 更新密码

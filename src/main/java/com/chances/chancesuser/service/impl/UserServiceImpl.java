@@ -49,6 +49,9 @@ public class UserServiceImpl implements UserService {
         if (StringUtils.isEmpty(userDTO.getLoginName())) {
             throw new CuException("用户名不能为空");
         }
+        if (userDao.existsByLoginName(userDTO.getLoginName())) {
+            throw new CuException("该用户名已存在");
+        }
         if (StringUtils.isEmpty(userDTO.getMobile())) {
             throw new CuException("手机号不能为空");
         }
@@ -118,7 +121,6 @@ public class UserServiceImpl implements UserService {
         List<UserDTO> userDTOSNew = userDTOS.stream()
                 .peek(userDTO -> userDTO.setAvata(null))
                 .peek(userDTO -> userDTO.setPassword(null))
-                .peek(userDTO -> userDTO.setLastLoginTime(null))
                 .collect(Collectors.toList());
         data.setJsonList(userDTOSNew);
         return data;
@@ -133,9 +135,12 @@ public class UserServiceImpl implements UserService {
     public UserDTO userInfo(String userId, String token) {
         User user = this.getUser(userId, token);
         UserDTO userDTO = BeanCopyUtil.copyBeanProperties(user, UserDTO::new);
-        userDTO.setStatus(null);
+        String avata = userDTO.getAvata();
+        if (StringUtils.isNotEmpty(avata)) {
+            String substring = avata.substring(avata.lastIndexOf("."));
+            userDTO.setAvata(userDTO.getLoginName()+substring);
+        }
         userDTO.setPassword(null);
-        userDTO.setLastLoginTime(null);
         return userDTO;
     }
 
@@ -158,7 +163,10 @@ public class UserServiceImpl implements UserService {
             user.setMobile(userDTO.getMobile());
         }
         //手机号校验
-        if (ObjectUtils.isNotEmpty(userDTO.getMobile()) && userDao.existsByMobile(userDTO.getMobile())) {
+        boolean b = userDao.existsByMobile(userDTO.getMobile());
+        boolean notEmpty = ObjectUtils.isNotEmpty(userDTO.getMobile());
+        boolean equals = user.getMobile().equals(userDTO.getMobile());
+        if (notEmpty && b && !equals) {
             throw new CuException("手机号重复");
         }
         userDao.save(user);
@@ -195,7 +203,7 @@ public class UserServiceImpl implements UserService {
     private String uploadDir;
 
 
-    private final List<String> images = Arrays.asList(".png", ".jpg", ",jpg");
+    private final List<String> images = Arrays.asList(".png", ".jpg", ".jpg",".jpeg");
 
     @Override
     public Result setImage(MultipartFile file, String token) {

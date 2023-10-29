@@ -24,4 +24,4 @@ chances:
     expiration: 3600
   upload:
     # 测试用  生产不能这样写
-    dir: /Users/lipengcheng/Chances-User/src/images
+    dir: /Users/lipengcheng/chances-user-web/public
