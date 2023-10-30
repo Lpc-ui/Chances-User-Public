@@ -303,7 +303,7 @@ public class UserServiceImpl implements UserService {
             if (!images.contains(fix)) {
                 throw new CuException("文件类型有误");
             }
-            Path filePath = Paths.get(uploadDir, username + fix);
+            Path filePath = Paths.get(currentWorkingDir + uploadDir, username + fix);
             // 将文件保存到指定路径
             file.transferTo(filePath.toFile());
             userDao.updateAvataByLoginName(username, filePath.toFile().getPath());
@@ -312,6 +312,12 @@ public class UserServiceImpl implements UserService {
             return Result.failed(ErrorCode.CU_EX).setMsg("上传失败");
         }
     }
+
+    @Value("${user.dir}")
+    private String currentWorkingDir;
+
+    @Value("${chances.max-file-size}")
+    private String maxFileSize;
 
     /**
      * 图片上传
@@ -327,8 +333,7 @@ public class UserServiceImpl implements UserService {
             // 用于此示例的假设文件名和类型
             String originalFilename = username + ".jpeg";
             long size = inputStream.available();
-            
-            if (size > 2000000) {
+            if (size > Integer.parseInt(maxFileSize)) {
                 throw new CuException("文件过大");
             }
             String fix = originalFilename.substring(originalFilename.lastIndexOf("."));
@@ -336,11 +341,12 @@ public class UserServiceImpl implements UserService {
                 throw new CuException("文件类型有误");
             }
             // 构建文件路径
-            Path filePath = Paths.get(uploadDir, username + fix);
+            String path = currentWorkingDir + uploadDir;
+            Path filePath = Paths.get(path, username + fix);
             // 使用Files.copy将输入流的内容保存到文件中
             Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
             // 更新数据库记录
-            userDao.updateAvataByLoginName(username, filePath.toString());
+            userDao.updateAvataByLoginName(username, username + fix);
         } catch (IOException e) {
             // 处理IO异常
         } finally {

@@ -23,5 +23,6 @@ chances:
     #秒
     expiration: 3600
   upload:
-    # 测试用  生产不能这样写
-    dir: /Users/lipengcheng/chances-user-web/public
+    #放在当前工程所在路径的avatar路径下
+    dir: /avatar
+  max-file-size: 2000000
