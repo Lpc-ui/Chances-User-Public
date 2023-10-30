@@ -167,8 +167,8 @@ public class UserServiceImpl implements UserService {
      * @param userId 用户ID
      */
     @Override
-    public void userDelete(String userId) {
-        userDao.deleteById(Long.valueOf(userId));
+    public void userDelete(Long userId) {
+        userDao.deleteById(userId);
     }
 
     /**
@@ -178,7 +178,7 @@ public class UserServiceImpl implements UserService {
      * @param token  当前登录用户[userID为传递0]
      */
     @Override
-    public UserDTO userInfo(String userId, String token) {
+    public UserDTO userInfo(Long userId, String token) {
         User user = this.getUser(userId, token);
         UserDTO userDTO = BeanCopyUtil.copyBeanProperties(user, UserDTO::new);
         userDTO.setPassword(null);
@@ -194,7 +194,7 @@ public class UserServiceImpl implements UserService {
      */
 
     @Override
-    public void userUpdate(String userId, UserDTO userDTO, String token) {
+    public void userUpdate(Long userId, UserDTO userDTO, String token) {
         User user = this.getUser(userId, token);
         if (user == null) {
             throw new CuException("参数有误");
@@ -227,10 +227,10 @@ public class UserServiceImpl implements UserService {
      * @param userId 用户id
      * @param token  当前token
      */
-    private User getUser(String userId, String token) {
+    private User getUser(Long userId, String token) {
         return userId.equals(StaticPro.CUURENT_LOGIN_USER)
                 ? userDao.findByLoginName(jwtUtils.getUsernameFromToken(token))
-                : userDao.findById(Long.valueOf(userId)).orElse(null);
+                : userDao.findById(userId).orElse(null);
     }
 
     /**
@@ -240,8 +240,8 @@ public class UserServiceImpl implements UserService {
      * @param status 状态
      */
     @Override
-    public void lock(String userId, String status) {
-        userDao.updateStatusById(Long.parseLong(userId), Integer.parseInt(status));
+    public void lock(Long userId, String status) {
+        userDao.updateStatusById(userId, Integer.parseInt(status));
     }
 
     /**

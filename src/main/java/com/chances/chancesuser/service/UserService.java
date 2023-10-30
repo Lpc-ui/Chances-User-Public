@@ -57,7 +57,7 @@ public interface UserService extends BaseService {
      *
      * @param userId 用户id
      */
-    void userDelete(String userId);
+    void userDelete(Long userId);
 
     /**
      * 用户信息
@@ -65,7 +65,7 @@ public interface UserService extends BaseService {
      * @param userId 用户ID
      * @param token  当前登录用户[userID为传递0]
      */
-    UserDTO userInfo(String userId, String token);
+    UserDTO userInfo(Long userId, String token);
 
     /**
      * 更新用户信息
@@ -74,7 +74,7 @@ public interface UserService extends BaseService {
      * @param userDTO 用户信息     | status | | admin |  | email |  | mobile |
      * @param token   登录用户
      */
-    void userUpdate(String userId, UserDTO userDTO, String token);
+    void userUpdate(Long userId, UserDTO userDTO, String token);
 
     /**
      * 用户锁定与解锁
@@ -82,7 +82,7 @@ public interface UserService extends BaseService {
      * @param userId 用户
      * @param status 状态
      */
-    void lock(String userId, String status);
+    void lock(Long userId, String status);
 
     /**
      * 修改密码

@@ -81,7 +81,7 @@ public class UserController {
      * @param userId 用户id
      */
     @DeleteMapping(value = "/{userId}")
-    private Result userDelete(@PathVariable String userId) {
+    private Result userDelete(@PathVariable Long userId) {
         userService.userDelete(userId);
         return Result.ok().setMsg("移除成功");
     }
@@ -93,7 +93,7 @@ public class UserController {
      * @param userId 用户id
      */
     @GetMapping(value = "/{userId}")
-    private Result userInfo(@PathVariable String userId,
+    private Result userInfo(@PathVariable Long userId,
                             @RequestHeader String token) {
         return Result.ok(userService.userInfo(userId, token)).setMsg("用户信息");
     }
@@ -104,7 +104,7 @@ public class UserController {
      * @param userId 用户id
      */
     @PutMapping(value = "/{userId}")
-    private Result userUpdate(@PathVariable String userId,
+    private Result userUpdate(@PathVariable Long userId,
                               @RequestBody UserDTO userDTO,
                               @RequestHeader String token) {
         userService.userUpdate(userId, userDTO, token);
@@ -120,7 +120,7 @@ public class UserController {
      */
     @PostMapping(value = "/update/status")
     private Result lock(@RequestParam("status") String status,
-                        @RequestParam("userId") String userId) {
+                        @RequestParam("userId") Long userId) {
         userService.lock(userId, status);
         return Result.ok().setMsg("更新成功");
     }
