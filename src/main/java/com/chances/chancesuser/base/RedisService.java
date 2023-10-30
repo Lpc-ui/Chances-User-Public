@@ -102,7 +102,6 @@ public class RedisService {
                 return baos.toByteArray();
             }
         } catch (Exception e) {
-            e.printStackTrace();
         }
         return null;
     }
@@ -122,7 +121,6 @@ public class RedisService {
                 return ois.readObject();
             }
         } catch (Exception e) {
-            e.printStackTrace();
         }
         return null;
     }

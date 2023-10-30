@@ -25,7 +25,6 @@ public class GlobalExceptionConfig {
     public Result handlerException(CuException e) {
         // 返回给前端
         log.error(e.getMessage());
-        e.printStackTrace();
         return Result.failed(new CuException(e.getMessage()));
     }
 
@@ -34,7 +33,6 @@ public class GlobalExceptionConfig {
     public Result handlerException(Exception e) {
         log.error(e.getMessage());
         log.error(Arrays.toString(e.getStackTrace()));
-        e.printStackTrace();
         return Result.failed(ErrorCode.SYS_UNKNOWN, "内部错误");
     }
 
@@ -42,7 +40,6 @@ public class GlobalExceptionConfig {
     @ExceptionHandler(NotLoginException.class)
     public Result handlerException(NotLoginException e) {
         log.info(NotLoginException.BE_MESSAGE);
-        e.printStackTrace();
         return Result.failed(new NotLoginException());
     }
 
@@ -50,7 +47,6 @@ public class GlobalExceptionConfig {
     @ExceptionHandler(LockException.class)
     public Result handlerException(LockException e) {
         log.info(LockException.BE_MESSAGE);
-        e.printStackTrace();
         return Result.failed(new LockException());
     }
 
@@ -58,7 +54,6 @@ public class GlobalExceptionConfig {
     @ExceptionHandler(PwdNotMatchException.class)
     public Result handlerException(PwdNotMatchException e) {
         log.info(PwdNotMatchException.BE_MESSAGE);
-        e.printStackTrace();
         return Result.failed(new PwdNotMatchException());
     }
 
@@ -66,7 +61,6 @@ public class GlobalExceptionConfig {
     @ExceptionHandler(MaxUploadSizeExceededException.class)
     public Result handlerException(MaxUploadSizeExceededException e) {
         log.info("文件过大");
-        e.printStackTrace();
         return Result.failed("文件过大");
     }
 }
