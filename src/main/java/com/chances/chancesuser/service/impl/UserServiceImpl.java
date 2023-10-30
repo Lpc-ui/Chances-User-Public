@@ -42,9 +42,24 @@ public class UserServiceImpl implements UserService {
     private UserDao userDao;
     @Resource
     private JwtUtils jwtUtils;
+    @Value("${user.dir}")
+    private String currentWorkingDir;
+    @Value("${chances.max-file-size}")
+    private String maxFileSize;
     //初始密码
     @Value("${chances.default-password:#{'qwerty'}}")
     private String defaultPassword;
+    /**
+     * 上传路径
+     */
+    @Value("${chances.upload.dir}")
+    private String uploadDir;
+
+    /**
+     * 可用图片
+     */
+    private final List<String> images = Arrays.asList(".png", ".jpg", ".jpg", ".jpeg");
+
 
     /**
      * 增加用户
@@ -264,23 +279,6 @@ public class UserServiceImpl implements UserService {
     }
 
 
-    /**
-     * 上传路径
-     */
-    @Value("${chances.upload.dir}")
-    private String uploadDir;
-
-
-    /**
-     * 可用图片
-     */
-    private final List<String> images = Arrays.asList(".png", ".jpg", ".jpg", ".jpeg");
-
-    @Value("${user.dir}")
-    private String currentWorkingDir;
-
-    @Value("${chances.max-file-size}")
-    private String maxFileSize;
 
     /**
      * 图片上传
