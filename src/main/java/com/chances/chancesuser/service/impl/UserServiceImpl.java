@@ -33,6 +33,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -180,11 +181,6 @@ public class UserServiceImpl implements UserService {
     public UserDTO userInfo(String userId, String token) {
         User user = this.getUser(userId, token);
         UserDTO userDTO = BeanCopyUtil.copyBeanProperties(user, UserDTO::new);
-        String avata = userDTO.getAvata();
-        if (StringUtils.isNotEmpty(avata)) {
-            String substring = avata.substring(avata.lastIndexOf("."));
-            userDTO.setAvata(userDTO.getLoginName() + substring);
-        }
         userDTO.setPassword(null);
         return userDTO;
     }
@@ -340,13 +336,19 @@ public class UserServiceImpl implements UserService {
             if (!images.contains(fix)) {
                 throw new CuException("文件类型有误");
             }
+            String format = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
             // 构建文件路径
-            String path = currentWorkingDir + uploadDir;
+            String path = currentWorkingDir + uploadDir + "/" + format;
             Path filePath = Paths.get(path, username + fix);
+            Path directoryPath = Paths.get(path);
+            if (!Files.exists(directoryPath)) {
+                Files.createDirectories(directoryPath); // 创建所有必要的父目录
+            }
             // 使用Files.copy将输入流的内容保存到文件中
             Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
             // 更新数据库记录
-            userDao.updateAvataByLoginName(username, username + fix);
+            String avata = uploadDir + "/" + format + "/" + username + fix;
+            userDao.updateAvataByLoginName(username, avata);
         } catch (IOException e) {
             // 处理IO异常
         } finally {
