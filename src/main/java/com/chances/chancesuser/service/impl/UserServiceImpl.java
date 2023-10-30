@@ -295,7 +295,7 @@ public class UserServiceImpl implements UserService {
             String username = jwtUtils.getUsernameFromToken(token);
             String originalFilename = file.getOriginalFilename();
             long size = file.getSize();
-            if (size > 2000000) {
+            if (size > Integer.parseInt(maxFileSize)) {
                 throw new CuException("文件过大");
             }
             assert originalFilename != null;
@@ -306,7 +306,7 @@ public class UserServiceImpl implements UserService {
             Path filePath = Paths.get(currentWorkingDir + uploadDir, username + fix);
             // 将文件保存到指定路径
             file.transferTo(filePath.toFile());
-            userDao.updateAvataByLoginName(username, filePath.toFile().getPath());
+            userDao.updateAvataByLoginName(username, username + fix);
             return Result.ok().setMsg("上传成功");
         } catch (IOException e) {
             return Result.failed(ErrorCode.CU_EX).setMsg("上传失败");
