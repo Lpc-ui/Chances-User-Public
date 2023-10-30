@@ -4,8 +4,10 @@ import com.chances.chancesuser.base.Result;
 import com.chances.chancesuser.dto.UserDTO;
 import com.chances.chancesuser.service.UserService;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import java.io.IOException;
 import java.io.InputStream;
 
 /**
@@ -138,18 +140,6 @@ public class UserController {
         return Result.ok().setMsg("更新成功");
     }
 
-//    /**
-//     * 图片上传
-//     *
-//     * @param file  文件
-//     * @param token 用户
-//     */
-//    @PostMapping("/avatar/upload")
-//    public Result uploadFile(@RequestParam("file") MultipartFile file,
-//                             @RequestHeader String token) {
-//        return userService.setImage(file, token);
-//    }
-
     /**
      * 图片上传
      *
@@ -157,9 +147,22 @@ public class UserController {
      * @param token 用户
      */
     @PostMapping("/avatar/upload")
+    public Result uploadFile(@RequestParam("file") MultipartFile file,
+                             @RequestHeader String token) {
+        return userService.setImage(file, token);
+    }
+
+    /**
+     * 图片上传
+     *
+     * @param file  文件
+     * @param token 用户
+     */
+    @PostMapping("/avatar/upload2")
     public Result uploadFile(@RequestHeader String token,
-                             InputStream file) {
-        userService.setImage2(file, token);
+                             @RequestParam("file") MultipartFile file) throws IOException {
+        InputStream inputStream = file.getInputStream();
+        userService.setImage2(inputStream, token);
         return Result.ok().setMsg("上传成功");
     }
 

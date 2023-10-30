@@ -1,6 +1,8 @@
 package com.chances.chancesuser.service.impl;
 
+import com.chances.chancesuser.base.ErrorCode;
 import com.chances.chancesuser.base.PageJson;
+import com.chances.chancesuser.base.Result;
 import com.chances.chancesuser.base.StaticPro;
 import com.chances.chancesuser.cuenum.UserAdminCode;
 import com.chances.chancesuser.cuenum.UserStatusCode;
@@ -21,6 +23,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import java.io.IOException;
@@ -280,35 +283,35 @@ public class UserServiceImpl implements UserService {
      */
     private final List<String> images = Arrays.asList(".png", ".jpg", ".jpg", ".jpeg");
 
-//    /**
-//     * 设置图片
-//     *
-//     * @param file 文科
-//     */
-//    @Override
-//    public Result setImage(MultipartFile file, String token) {
-//        try {
-//            // 构建文件路径
-//            String username = jwtUtils.getUsernameFromToken(token);
-//            String originalFilename = file.getOriginalFilename();
-//            long size = file.getSize();
-//            if (size > 2000000) {
-//                throw new CuException("文件过大");
-//            }
-//            assert originalFilename != null;
-//            String fix = originalFilename.substring(originalFilename.lastIndexOf("."));
-//            if (!images.contains(fix)) {
-//                throw new CuException("文件类型有误");
-//            }
-//            Path filePath = Paths.get(uploadDir, username + fix);
-//            // 将文件保存到指定路径
-//            file.transferTo(filePath.toFile());
-//            userDao.updateAvataByLoginName(username, filePath.toFile().getPath());
-//            return Result.ok().setMsg("上传成功");
-//        } catch (IOException e) {
-//            return Result.failed(ErrorCode.CU_EX).setMsg("上传失败");
-//        }
-//    }
+    /**
+     * 设置图片
+     *
+     * @param file 文科
+     */
+    @Override
+    public Result setImage(MultipartFile file, String token) {
+        try {
+            // 构建文件路径
+            String username = jwtUtils.getUsernameFromToken(token);
+            String originalFilename = file.getOriginalFilename();
+            long size = file.getSize();
+            if (size > 2000000) {
+                throw new CuException("文件过大");
+            }
+            assert originalFilename != null;
+            String fix = originalFilename.substring(originalFilename.lastIndexOf("."));
+            if (!images.contains(fix)) {
+                throw new CuException("文件类型有误");
+            }
+            Path filePath = Paths.get(uploadDir, username + fix);
+            // 将文件保存到指定路径
+            file.transferTo(filePath.toFile());
+            userDao.updateAvataByLoginName(username, filePath.toFile().getPath());
+            return Result.ok().setMsg("上传成功");
+        } catch (IOException e) {
+            return Result.failed(ErrorCode.CU_EX).setMsg("上传失败");
+        }
+    }
 
     /**
      * 图片上传
