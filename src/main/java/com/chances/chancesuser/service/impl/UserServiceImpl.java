@@ -1,8 +1,6 @@
 package com.chances.chancesuser.service.impl;
 
-import com.chances.chancesuser.base.ErrorCode;
 import com.chances.chancesuser.base.PageJson;
-import com.chances.chancesuser.base.Result;
 import com.chances.chancesuser.base.StaticPro;
 import com.chances.chancesuser.cuenum.UserAdminCode;
 import com.chances.chancesuser.cuenum.UserStatusCode;
@@ -23,12 +21,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
@@ -280,32 +280,73 @@ public class UserServiceImpl implements UserService {
      */
     private final List<String> images = Arrays.asList(".png", ".jpg", ".jpg", ".jpeg");
 
+//    /**
+//     * 设置图片
+//     *
+//     * @param file 文科
+//     */
+//    @Override
+//    public Result setImage(MultipartFile file, String token) {
+//        try {
+//            // 构建文件路径
+//            String username = jwtUtils.getUsernameFromToken(token);
+//            String originalFilename = file.getOriginalFilename();
+//            long size = file.getSize();
+//            if (size > 2000000) {
+//                throw new CuException("文件过大");
+//            }
+//            assert originalFilename != null;
+//            String fix = originalFilename.substring(originalFilename.lastIndexOf("."));
+//            if (!images.contains(fix)) {
+//                throw new CuException("文件类型有误");
+//            }
+//            Path filePath = Paths.get(uploadDir, username + fix);
+//            // 将文件保存到指定路径
+//            file.transferTo(filePath.toFile());
+//            userDao.updateAvataByLoginName(username, filePath.toFile().getPath());
+//            return Result.ok().setMsg("上传成功");
+//        } catch (IOException e) {
+//            return Result.failed(ErrorCode.CU_EX).setMsg("上传失败");
+//        }
+//    }
+
     /**
-     * 设置图片
-     * @param file 文科
+     * 图片上传
+     *
+     * @param inputStream 流
+     * @param token       token
      */
     @Override
-    public Result setImage(MultipartFile file, String token) {
+    public void setImage2(InputStream inputStream, String token) {
         try {
-            // 构建文件路径
+            // 从token获取用户名
             String username = jwtUtils.getUsernameFromToken(token);
-            String originalFilename = file.getOriginalFilename();
-            long size = file.getSize();
+            // 用于此示例的假设文件名和类型
+            String originalFilename = username + ".jpeg";
+            long size = inputStream.available();
+            
             if (size > 2000000) {
                 throw new CuException("文件过大");
             }
-            assert originalFilename != null;
             String fix = originalFilename.substring(originalFilename.lastIndexOf("."));
             if (!images.contains(fix)) {
                 throw new CuException("文件类型有误");
             }
+            // 构建文件路径
             Path filePath = Paths.get(uploadDir, username + fix);
-            // 将文件保存到指定路径
-            file.transferTo(filePath.toFile());
-            userDao.updateAvataByLoginName(username, filePath.toFile().getPath());
-            return Result.ok().setMsg("上传成功");
+            // 使用Files.copy将输入流的内容保存到文件中
+            Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
+            // 更新数据库记录
+            userDao.updateAvataByLoginName(username, filePath.toString());
         } catch (IOException e) {
-            return Result.failed(ErrorCode.CU_EX).setMsg("上传失败");
+            // 处理IO异常
+        } finally {
+            // 确保输入流关闭，防止资源泄露
+            try {
+                inputStream.close();
+            } catch (IOException e) {
+                // 处理流关闭时的异常
+            }
         }
     }
 }
