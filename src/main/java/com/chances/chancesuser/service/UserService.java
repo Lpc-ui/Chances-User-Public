@@ -98,5 +98,5 @@ public interface UserService extends BaseService {
      * @param inputStream 流
      * @param token token
      */
-    void setImage2(InputStream inputStream, String token);
+    void setImage(InputStream inputStream, String token);
 }

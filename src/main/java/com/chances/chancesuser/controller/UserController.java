@@ -150,7 +150,7 @@ public class UserController {
     public Result uploadFile(@RequestHeader String token,
                              @RequestParam("file") MultipartFile file) throws IOException {
         InputStream inputStream = file.getInputStream();
-        userService.setImage2(inputStream, token);
+        userService.setImage(inputStream, token);
         return Result.ok().setMsg("上传成功");
     }
 

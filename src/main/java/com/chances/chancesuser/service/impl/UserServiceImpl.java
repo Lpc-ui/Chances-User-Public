@@ -289,7 +289,7 @@ public class UserServiceImpl implements UserService {
      * @param token       token
      */
     @Override
-    public void setImage2(InputStream inputStream, String token) {
+    public void setImage(InputStream inputStream, String token) {
         try {
             // 从token获取用户名
             String username = jwtUtils.getUsernameFromToken(token);
