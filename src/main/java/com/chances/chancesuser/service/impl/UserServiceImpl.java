@@ -3,6 +3,7 @@ package com.chances.chancesuser.service.impl;
 import com.chances.chancesuser.base.ErrorCode;
 import com.chances.chancesuser.base.PageJson;
 import com.chances.chancesuser.base.Result;
+import com.chances.chancesuser.base.StaticPro;
 import com.chances.chancesuser.cuenum.UserAdminCode;
 import com.chances.chancesuser.cuenum.UserStatusCode;
 import com.chances.chancesuser.dao.UserDao;
@@ -44,6 +45,11 @@ public class UserServiceImpl implements UserService {
     @Value("${chances.default-password:#{'qwerty'}}")
     private String defaultPassword;
 
+    /**
+     * 增加用户
+     *
+     * @param userDTO userDTO
+     */
     @Override
     public void add(UserDTO userDTO) {
         if (StringUtils.isEmpty(userDTO.getLoginName())) {
@@ -71,6 +77,12 @@ public class UserServiceImpl implements UserService {
         userDao.insert(user);
     }
 
+
+    /**
+     * @param loginName 用户名
+     * @param password  密码
+     * @return token
+     */
     @Override
     public String userLogin(String loginName, String password) {
         User user = userDao.findByLoginName(loginName);
@@ -91,6 +103,11 @@ public class UserServiceImpl implements UserService {
         return token;
     }
 
+    /**
+     * 用户退出
+     *
+     * @param token token
+     */
     @Override
     public void logout(String token) {
         String userName = jwtUtils.getUsernameFromToken(token);
@@ -100,11 +117,25 @@ public class UserServiceImpl implements UserService {
         jwtUtils.invalidateToken(userName);
     }
 
+    /**
+     * findByName
+     *
+     * @param userName userName
+     * @return UserMO
+     */
     @Override
     public User findByName(String userName) {
         return userDao.findByLoginName(userName);
     }
 
+    /**
+     * 用户列表
+     *
+     * @param email    email
+     * @param mobile   mobile
+     * @param pageSize pageSize
+     * @param pageNum  pageNum
+     */
     @Override
     public PageJson<UserDTO> userList(String email, String mobile, String pageNum, String pageSize) {
         int size = Integer.parseInt(pageSize);
@@ -126,11 +157,22 @@ public class UserServiceImpl implements UserService {
         return data;
     }
 
+    /**
+     * 删除
+     *
+     * @param userId 用户ID
+     */
     @Override
     public void userDelete(String userId) {
         userDao.deleteById(Long.valueOf(userId));
     }
 
+    /**
+     * 用户信息
+     *
+     * @param userId 用户ID
+     * @param token  当前登录用户[userID为传递0]
+     */
     @Override
     public UserDTO userInfo(String userId, String token) {
         User user = this.getUser(userId, token);
@@ -138,11 +180,19 @@ public class UserServiceImpl implements UserService {
         String avata = userDTO.getAvata();
         if (StringUtils.isNotEmpty(avata)) {
             String substring = avata.substring(avata.lastIndexOf("."));
-            userDTO.setAvata(userDTO.getLoginName()+substring);
+            userDTO.setAvata(userDTO.getLoginName() + substring);
         }
         userDTO.setPassword(null);
         return userDTO;
     }
+
+    /**
+     * 更新用户信息
+     *
+     * @param userId  用户ID
+     * @param userDTO 用户信息     | status | | admin |  | email |  | mobile |
+     * @param token   登录用户
+     */
 
     @Override
     public void userUpdate(String userId, UserDTO userDTO, String token) {
@@ -172,17 +222,36 @@ public class UserServiceImpl implements UserService {
         userDao.save(user);
     }
 
+    /**
+     * 获取用户
+     *
+     * @param userId 用户id
+     * @param token  当前token
+     */
     private User getUser(String userId, String token) {
-        return userId.equals("0")
+        return userId.equals(StaticPro.CUURENT_LOGIN_USER)
                 ? userDao.findByLoginName(jwtUtils.getUsernameFromToken(token))
                 : userDao.findById(Long.valueOf(userId)).orElse(null);
     }
 
+    /**
+     * 用户锁定与解锁
+     *
+     * @param userId 用户
+     * @param status 状态
+     */
     @Override
     public void lock(String userId, String status) {
         userDao.updateStatusById(Long.parseLong(userId), Integer.parseInt(status));
     }
 
+    /**
+     * 修改密码
+     *
+     * @param oldPassword 旧密码
+     * @param newPassword 新密码
+     * @param token       当前用户
+     */
     @Override
     public void password(String oldPassword, String newPassword, String token) throws Exception {
         String username = jwtUtils.getUsernameFromToken(token);
@@ -199,12 +268,22 @@ public class UserServiceImpl implements UserService {
     }
 
 
+    /**
+     * 上传路径
+     */
     @Value("${chances.upload.dir}")
     private String uploadDir;
 
 
-    private final List<String> images = Arrays.asList(".png", ".jpg", ".jpg",".jpeg");
+    /**
+     * 可用图片
+     */
+    private final List<String> images = Arrays.asList(".png", ".jpg", ".jpg", ".jpeg");
 
+    /**
+     * 设置图片
+     * @param file 文科
+     */
     @Override
     public Result setImage(MultipartFile file, String token) {
         try {
@@ -226,7 +305,6 @@ public class UserServiceImpl implements UserService {
             userDao.updateAvataByLoginName(username, filePath.toFile().getPath());
             return Result.ok().setMsg("上传成功");
         } catch (IOException e) {
-            e.printStackTrace();
             return Result.failed(ErrorCode.CU_EX).setMsg("上传失败");
         }
     }

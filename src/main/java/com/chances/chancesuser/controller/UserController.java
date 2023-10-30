@@ -8,6 +8,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 
+/**
+ * 用户相关接口
+ */
 @RestController
 @RequestMapping("/user")
 public class UserController {

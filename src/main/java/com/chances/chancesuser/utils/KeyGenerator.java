@@ -3,6 +3,9 @@ package com.chances.chancesuser.utils;
 import java.security.SecureRandom;
 import java.util.Base64;
 
+/**
+ * 生成密钥
+ */
 public class KeyGenerator {
     public static void main(String[] args) {
         int keySizeBits = 512; // You can adjust the key size as needed
@@ -11,6 +14,9 @@ public class KeyGenerator {
         System.out.println("Generated Key: " + base64Key);
     }
 
+    /**
+     * 生成jwt密钥
+     */
     private static byte[] generateSecureKey(int keySizeBits) {
         SecureRandom secureRandom = new SecureRandom();
         byte[] key = new byte[keySizeBits / 8];

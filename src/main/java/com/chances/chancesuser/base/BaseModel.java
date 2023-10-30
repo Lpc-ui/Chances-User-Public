@@ -9,6 +9,9 @@ import javax.persistence.MappedSuperclass;
 import javax.persistence.Id;
 import java.io.Serializable;
 
+/**
+ * baseModel
+ */
 @Data
 @MappedSuperclass
 public class BaseModel implements Serializable {

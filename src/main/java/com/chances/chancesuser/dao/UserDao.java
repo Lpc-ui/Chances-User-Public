@@ -14,6 +14,9 @@ import org.springframework.data.repository.query.Param;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 
+/**
+ * 用户持久
+ */
 public interface UserDao extends BaseDao<User> {
     User findByLoginName(String loginName);
 

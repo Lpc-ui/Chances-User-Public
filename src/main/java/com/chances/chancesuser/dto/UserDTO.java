@@ -1,17 +1,19 @@
 package com.chances.chancesuser.dto;
 
-import com.chances.chancesuser.base.PageBo;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 import java.time.LocalDateTime;
 
-@EqualsAndHashCode(callSuper = true)
+/**
+ * 用户传输对象
+ */
 @Data
 //序列化时候只包含字段不为null的字段
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class UserDTO extends PageBo {
+public class UserDTO {
+    private Integer pageSize;
+    private Integer pageNum;
     private Long id;
     /**
      * 登录名

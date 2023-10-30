@@ -28,6 +28,11 @@ public class BeanCopyUtil extends BeanUtils {
         return list;
     }
 
+    /**
+     * 对象拷贝
+     * @param source 源
+     * @param target 目标
+     */
     public static <S, T> T copyBeanProperties(S source, Supplier<T> target) {
         T target1 = target.get();
         copyProperties(source, target1);

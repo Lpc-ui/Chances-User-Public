@@ -12,6 +12,9 @@ import javax.annotation.Resource;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * JWT工具
+ */
 @Component
 public class JwtUtils {
 

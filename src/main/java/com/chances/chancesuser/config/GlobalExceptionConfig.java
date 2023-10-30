@@ -28,6 +28,7 @@ public class GlobalExceptionConfig {
         e.printStackTrace();
         return Result.failed(new CuException(e.getMessage()));
     }
+
     // 拦截：其它所有异常
     @ExceptionHandler(Exception.class)
     public Result handlerException(Exception e) {

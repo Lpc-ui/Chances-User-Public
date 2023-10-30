@@ -1,5 +1,8 @@
 package com.chances.chancesuser.base;
 
+/**
+ * 公共异常
+ */
 public class BaseException extends RuntimeException {
     public Integer CODE = 10000;
 
