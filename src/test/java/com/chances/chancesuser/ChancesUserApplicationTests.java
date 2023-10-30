@@ -235,7 +235,7 @@ class ChancesUserApplicationTests {
         // 断言禁用
         assertEquals(UserStatusCode.DISABLE.code(), user.getStatus());
         //解锁
-        userService.lock(String.valueOf(userId), String.valueOf(UserStatusCode.OK.code()));
+        userService.lock(userId, String.valueOf(UserStatusCode.OK.code()));
     }
 
 
