@@ -146,18 +146,6 @@ public class UserController {
      * @param file  文件
      * @param token 用户
      */
-    @PostMapping("/avatar/upload2")
-    public Result uploadFile(@RequestParam("file") MultipartFile file,
-                             @RequestHeader String token) {
-        return userService.setImage(file, token);
-    }
-
-    /**
-     * 图片上传
-     *
-     * @param file  文件
-     * @param token 用户
-     */
     @PostMapping("/avatar/upload")
     public Result uploadFile(@RequestHeader String token,
                              @RequestParam("file") MultipartFile file) throws IOException {
